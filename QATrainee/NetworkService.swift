@@ -1,11 +1,41 @@
 import Foundation
 
+// MARK: - URLSession Protocols for Mocking
+
+protocol URLSessionProtocol {
+    func dataTask(with url: URL, completionHandler: @escaping (Data?, URLResponse?, Error?) -> Void) -> URLSessionDataTaskProtocol
+}
+
+protocol URLSessionDataTaskProtocol {
+    func resume()
+}
+
+// Conform URLSession to URLSessionProtocol
+extension URLSession: URLSessionProtocol {
+    func dataTask(with url: URL, completionHandler: @escaping (Data?, URLResponse?, Error?) -> Void) -> URLSessionDataTaskProtocol {
+        return (dataTask(with: url, completionHandler: completionHandler) as URLSessionDataTask) // No need to cast to URLSessionDataTaskProtocol here, as URLSessionDataTask itself will conform
+    }
+}
+
+// Conform URLSessionDataTask to URLSessionDataTaskProtocol
+extension URLSessionDataTask: URLSessionDataTaskProtocol {}
+
 // Simulating a client-server interaction (REST-like)
 class NetworkService {
     
     // Shared instance for easy access, though dependency injection is often preferred
     static let shared = NetworkService()
-    private init() {}
+    private let session: URLSessionProtocol
+
+    // Private init for singleton
+    private init() {
+        self.session = URLSession.shared
+    }
+
+    // Public init for testing and custom session
+    init(session: URLSessionProtocol) {
+        self.session = session
+    }
     
     // The local sampleEvents array will be removed as events are fetched from the server.
     // private var events: [Event] = sampleEvents 
@@ -34,7 +64,7 @@ class NetworkService {
             return
         }
         
-        URLSession.shared.dataTask(with: url) { data, response, error in
+        session.dataTask(with: url) { data, response, error in
             DispatchQueue.main.async {
                 if let error = error {
                     print("[NetworkService] Error fetching events: \(error.localizedDescription)")
@@ -189,7 +219,7 @@ class NetworkService {
             return
         }
         
-        URLSession.shared.dataTask(with: url) { data, response, error in
+        session.dataTask(with: url) { data, response, error in
             // Возвращаемся в главный поток для обновления UI
             DispatchQueue.main.async {
                 if let error = error {
@@ -240,7 +270,7 @@ class NetworkService {
             return
         }
 
-        URLSession.shared.dataTask(with: url) { data, response, error in
+        session.dataTask(with: url) { data, response, error in
             DispatchQueue.main.async {
                 if let error = error {
                     print("NetworkService: Ошибка при запросе списка городов: \(error.localizedDescription)")
@@ -295,7 +325,7 @@ class NetworkService {
             return
         }
 
-        URLSession.shared.dataTask(with: url) { data, response, error in
+        session.dataTask(with: url) { data, response, error in
             DispatchQueue.main.async {
                 if let error = error {
                     print("NetworkService: Ошибка при запросе ответного сообщения: \(error.localizedDescription)")
