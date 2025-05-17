@@ -64,7 +64,11 @@ class NetworkServiceTests: XCTestCase {
         // 7. Assert result
         XCTAssertNotNil(actualEvents)
         XCTAssertNil(actualError)
-        XCTAssertEqual(actualEvents?.count, 2)
+        XCTAssertEqual(actualEvents?.count, 2, "Should have mapped 2 events.")
+        guard let firstEvent = actualEvents?.first else {
+            XCTFail("First event is nil")
+            return
+        }
         XCTAssertEqual(actualEvents?.first?.name, "Конференция Разработчиков")
         XCTAssertEqual(actualEvents?.first?.city, "Москва")
         // We should also check the date parsing, but it requires a specific date object. For now, checking name and city.
@@ -108,8 +112,12 @@ class NetworkServiceTests: XCTestCase {
         // 6. Assert result
         XCTAssertNil(actualEvents)
         XCTAssertNotNil(actualError)
-        XCTAssertEqual((actualError as NSError?)?.domain, expectedError.domain)
-        XCTAssertEqual((actualError as NSError?)?.code, expectedError.code)
+        guard let networkErr = actualError as? NetworkError else {
+            XCTFail("Error was not a NetworkError: \(String(describing: actualError))")
+            return
+        }
+        XCTAssertEqual(networkErr, NetworkError.networkRequestFailed(expectedError),
+                       "Expected .networkRequestFailed(\(expectedError.localizedDescription)), got \(networkErr.localizedDescription)")
     }
 
     func testFetchEvents_Failure_HTTPError() {
@@ -149,9 +157,12 @@ class NetworkServiceTests: XCTestCase {
         // 6. Assert result
         XCTAssertNil(actualEvents)
         XCTAssertNotNil(actualError)
-        XCTAssertEqual((actualError as NSError?)?.domain, "NetworkServiceError")
-        XCTAssertEqual((actualError as NSError?)?.code, httpErrorStatusCode)
-        XCTAssertTrue(((actualError as NSError?)?.localizedDescription.contains("\(httpErrorStatusCode)")) ?? false)
+        guard let networkErr = actualError as? NetworkError else {
+            XCTFail("Error was not a NetworkError: \(String(describing: actualError))")
+            return
+        }
+        XCTAssertEqual(networkErr, NetworkError.invalidResponse(statusCode: httpErrorStatusCode),
+                       "Expected .invalidResponse with status \(httpErrorStatusCode), got \(networkErr.localizedDescription)")
     }
 
     func testFetchEvents_Failure_NoData() {
@@ -190,9 +201,12 @@ class NetworkServiceTests: XCTestCase {
         // 6. Assert result
         XCTAssertNil(actualEvents)
         XCTAssertNotNil(actualError)
-        XCTAssertEqual((actualError as NSError?)?.domain, "NetworkServiceError")
-        XCTAssertEqual((actualError as NSError?)?.code, -32) // Specific code for no data in NetworkService
-        XCTAssertEqual((actualError as NSError?)?.localizedDescription, "Данные событий не были получены от сервера.")
+        guard let networkErr = actualError as? NetworkError else {
+            XCTFail("Error was not a NetworkError: \(String(describing: actualError))")
+            return
+        }
+        XCTAssertEqual(networkErr, NetworkError.noData,
+                       "Expected .noData, got \(networkErr.localizedDescription)")
     }
 
     func testFetchEvents_Failure_DecodingError() throws {
@@ -235,8 +249,11 @@ class NetworkServiceTests: XCTestCase {
         // 7. Assert result
         XCTAssertNil(actualEvents)
         XCTAssertNotNil(actualError)
-        // Check that the error is a DecodingError
-        XCTAssertTrue(actualError is DecodingError, "Error should be a DecodingError, but was \(type(of: actualError!))")
+        guard let networkErr = actualError as? NetworkError else {
+            XCTFail("Error was not a NetworkError: \(String(describing: actualError))")
+            return
+        }
+        guard case .decodingError = networkErr else { XCTFail("Expected .decodingError, got \(networkErr)"); return }
     }
 
     // MARK: - User Profile Tests
@@ -321,8 +338,12 @@ class NetworkServiceTests: XCTestCase {
         XCTAssertTrue(mockSession.nextDataTask.resumeWasCalled)
         XCTAssertNil(actualProfile)
         XCTAssertNotNil(actualError)
-        XCTAssertEqual((actualError as NSError?)?.domain, expectedError.domain)
-        XCTAssertEqual((actualError as NSError?)?.code, expectedError.code)
+        guard let networkErr = actualError as? NetworkError else {
+            XCTFail("Error was not a NetworkError: \(String(describing: actualError))")
+            return
+        }
+        XCTAssertEqual(networkErr, NetworkError.networkRequestFailed(expectedError),
+                       "Expected .networkRequestFailed, got \(networkErr.localizedDescription)")
     }
 
     func testFetchUserProfile_Failure_HTTPError() {
@@ -353,9 +374,12 @@ class NetworkServiceTests: XCTestCase {
         XCTAssertTrue(mockSession.nextDataTask.resumeWasCalled)
         XCTAssertNil(actualProfile)
         XCTAssertNotNil(actualError)
-        XCTAssertEqual((actualError as NSError?)?.domain, "NetworkServiceError")
-        XCTAssertEqual((actualError as NSError?)?.code, httpErrorStatusCode)
-        XCTAssertTrue(((actualError as NSError?)?.localizedDescription.contains("\(httpErrorStatusCode)")) ?? false)
+        guard let networkErr = actualError as? NetworkError else {
+            XCTFail("Error was not a NetworkError: \(String(describing: actualError))")
+            return
+        }
+        XCTAssertEqual(networkErr, NetworkError.invalidResponse(statusCode: httpErrorStatusCode),
+                       "Expected .invalidResponse with status \(httpErrorStatusCode), got \(networkErr.localizedDescription)")
     }
 
     func testFetchUserProfile_Failure_NoData() {
@@ -386,45 +410,52 @@ class NetworkServiceTests: XCTestCase {
         XCTAssertTrue(mockSession.nextDataTask.resumeWasCalled)
         XCTAssertNil(actualProfile)
         XCTAssertNotNil(actualError)
-        XCTAssertEqual((actualError as NSError?)?.domain, "NetworkServiceError")
-        XCTAssertEqual((actualError as NSError?)?.code, -2) // Specific code in NetworkService for no profile data
-        XCTAssertEqual((actualError as NSError?)?.localizedDescription, "Данные профиля пользователя не были получены от сервера.")
+        guard let networkErr = actualError as? NetworkError else {
+            XCTFail("Error was not a NetworkError: \(String(describing: actualError))")
+            return
+        }
+        XCTAssertEqual(networkErr, NetworkError.noData,
+                       "Expected .noData, got \(networkErr.localizedDescription)")
     }
 
-//    func testFetchUserProfile_Failure_DecodingError() throws {
-//        let expectation = self.expectation(description: "FetchUserProfile decoding error expectation")
-//        
-//        // 1. Prepare malformed mock data
-//        let malformedJsonString = "{\"id\": \"user123\", \"first_name\": \"Maria\"}" // Malformed: e.g., might be missing other required fields or have type mismatches
-//        let mockJsonData = Data(malformedJsonString.utf8)
-//        
-//        mockSession.nextData = mockJsonData
-//        mockSession.nextResponse = HTTPURLResponse(url: URL(string: "https://r2.mocker.surfstudio.ru/qq_trainee/user/profile")!,
-//                                                 statusCode: 200,
-//                                                 httpVersion: nil,
-//                                                 headerFields: nil)
-//        
-//        var actualProfile: UserProfile?
-//        var actualError: Error?
-//        
-//        sut.fetchUserProfile { result in
-//            switch result {
-//            case .success(let profile):
-//                actualProfile = profile
-//            case .failure(let error):
-//                actualError = error
-//            }
-//            expectation.fulfill()
-//        }
-//        
-//        waitForExpectations(timeout: 1.0)
-//        
-//        XCTAssertEqual(mockSession.lastURL?.absoluteString, "https://r2.mocker.surfstudio.ru/qq_trainee/user/profile")
-//        XCTAssertTrue(mockSession.nextDataTask.resumeWasCalled)
-//        XCTAssertNil(actualProfile)
-//        XCTAssertNotNil(actualError)
-//        XCTAssertTrue(actualError is DecodingError, "Error should be a DecodingError, but was \(type(of: actualError!))")
-//    }
+    func testFetchUserProfile_Failure_DecodingError() throws {
+        let expectation = self.expectation(description: "FetchUserProfile decoding error expectation")
+        
+        // 1. Prepare malformed mock data
+        let malformedJsonString = "{\"id\": \"user123\", \"first_name\": \"Maria\"}" // Malformed: missing other required fields
+        let mockJsonData = Data(malformedJsonString.utf8)
+        
+        mockSession.nextData = mockJsonData
+        mockSession.nextResponse = HTTPURLResponse(url: URL(string: "https://r2.mocker.surfstudio.ru/qq_trainee/user/profile")!,
+                                                 statusCode: 200,
+                                                 httpVersion: nil,
+                                                 headerFields: nil)
+        
+        var actualProfile: UserProfile?
+        var actualError: Error?
+        
+        sut.fetchUserProfile { result in
+            switch result {
+            case .success(let profile):
+                actualProfile = profile
+            case .failure(let error):
+                actualError = error
+            }
+            expectation.fulfill()
+        }
+        
+        waitForExpectations(timeout: 1.0)
+        
+        XCTAssertEqual(mockSession.lastURL?.absoluteString, "https://r2.mocker.surfstudio.ru/qq_trainee/user/profile")
+        XCTAssertTrue(mockSession.nextDataTask.resumeWasCalled)
+        XCTAssertNil(actualProfile)
+        XCTAssertNotNil(actualError)
+        guard let networkErr = actualError as? NetworkError else {
+            XCTFail("Error was not a NetworkError: \(String(describing: actualError))")
+            return
+        }
+        guard case .decodingError = networkErr else { XCTFail("Expected .decodingError, got \(networkErr)"); return }
+    }
 
     // MARK: - Cities Tests
 
@@ -506,8 +537,12 @@ class NetworkServiceTests: XCTestCase {
         XCTAssertTrue(mockSession.nextDataTask.resumeWasCalled)
         XCTAssertNil(actualCities)
         XCTAssertNotNil(actualError)
-        XCTAssertEqual((actualError as NSError?)?.domain, expectedError.domain)
-        XCTAssertEqual((actualError as NSError?)?.code, expectedError.code)
+        guard let networkErr = actualError as? NetworkError else {
+            XCTFail("Error was not a NetworkError: \(String(describing: actualError))")
+            return
+        }
+        XCTAssertEqual(networkErr, NetworkError.networkRequestFailed(expectedError),
+                       "Expected .networkRequestFailed, got \(networkErr.localizedDescription)")
     }
 
     func testFetchCities_Failure_HTTPError() {
@@ -538,43 +573,49 @@ class NetworkServiceTests: XCTestCase {
         XCTAssertTrue(mockSession.nextDataTask.resumeWasCalled)
         XCTAssertNil(actualCities)
         XCTAssertNotNil(actualError)
-        XCTAssertEqual((actualError as NSError?)?.domain, "NetworkServiceError")
-        XCTAssertEqual((actualError as NSError?)?.code, httpErrorStatusCode)
-        XCTAssertTrue(((actualError as NSError?)?.localizedDescription.contains("\(httpErrorStatusCode)")) ?? false)
+        guard let networkErr = actualError as? NetworkError else {
+            XCTFail("Error was not a NetworkError: \(String(describing: actualError))")
+            return
+        }
+        XCTAssertEqual(networkErr, NetworkError.invalidResponse(statusCode: httpErrorStatusCode),
+                       "Expected .invalidResponse with status \(httpErrorStatusCode), got \(networkErr.localizedDescription)")
     }
 
-//    func testFetchCities_Failure_NoData() {
-//        let expectation = self.expectation(description: "FetchCities no data expectation")
-//
-//        mockSession.nextData = nil
-//        mockSession.nextResponse = HTTPURLResponse(url: URL(string: "https://r2.mocker.surfstudio.ru/qq_trainee/cities")!,
-//                                                 statusCode: 200,
-//                                                 httpVersion: nil,
-//                                                 headerFields: nil)
-//        
-//        var actualCities: [City]?
-//        var actualError: Error?
-//        
-//        sut.fetchCities { result in
-//            switch result {
-//            case .success(let cities):
-//                actualCities = cities
-//            case .failure(let error):
-//                actualError = error
-//            }
-//            expectation.fulfill()
-//        }
-//        
-//        waitForExpectations(timeout: 1.0)
-//        
-//        XCTAssertEqual(mockSession.lastURL?.absoluteString, "https://r2.mocker.surfstudio.ru/qq_trainee/cities")
-//        XCTAssertTrue(mockSession.nextDataTask.resumeWasCalled)
-//        XCTAssertNil(actualCities)
-//        XCTAssertNotNil(actualError)
-//        XCTAssertEqual((actualError as NSError?)?.domain, "NetworkServiceError")
-//        XCTAssertEqual((actualError as NSError?)?.code, -12) // Specific code in NetworkService for no cities data
-//        XCTAssertEqual((actualError as NSError?)?.localizedDescription, "Данные городов не были получены от сервера.")
-//    }
+    func testFetchCities_Failure_NoData() {
+        let expectation = self.expectation(description: "FetchCities no data expectation")
+
+        mockSession.nextData = nil
+        mockSession.nextResponse = HTTPURLResponse(url: URL(string: "https://r2.mocker.surfstudio.ru/qq_trainee/cities")!,
+                                                 statusCode: 200,
+                                                 httpVersion: nil,
+                                                 headerFields: nil)
+        
+        var actualCities: [City]?
+        var actualError: Error?
+        
+        sut.fetchCities { result in
+            switch result {
+            case .success(let cities):
+                actualCities = cities
+            case .failure(let error):
+                actualError = error
+            }
+            expectation.fulfill()
+        }
+        
+        waitForExpectations(timeout: 1.0)
+        
+        XCTAssertEqual(mockSession.lastURL?.absoluteString, "https://r2.mocker.surfstudio.ru/qq_trainee/cities")
+        XCTAssertTrue(mockSession.nextDataTask.resumeWasCalled)
+        XCTAssertNil(actualCities)
+        XCTAssertNotNil(actualError)
+        guard let networkErr = actualError as? NetworkError else {
+            XCTFail("Error was not a NetworkError: \(String(describing: actualError))")
+            return
+        }
+        XCTAssertEqual(networkErr, NetworkError.noData,
+                       "Expected .noData, got \(networkErr.localizedDescription)")
+    }
 
     func testFetchCities_Failure_DecodingError() throws {
         let expectation = self.expectation(description: "FetchCities decoding error expectation")
@@ -616,7 +657,11 @@ class NetworkServiceTests: XCTestCase {
         // 7. Assert result
         XCTAssertNil(actualCities)
         XCTAssertNotNil(actualError)
-        XCTAssertTrue(actualError is DecodingError, "Error should be a DecodingError, but was \(type(of: actualError!))")
+        guard let networkErr = actualError as? NetworkError else {
+            XCTFail("Error was not a NetworkError: \(String(describing: actualError))")
+            return
+        }
+        guard case .decodingError = networkErr else { XCTFail("Expected .decodingError, got \(networkErr)"); return }
     }
 
     // MARK: - Create Event Tests
@@ -691,9 +736,12 @@ class NetworkServiceTests: XCTestCase {
         
         XCTAssertNil(createdEvent)
         XCTAssertNotNil(actualError)
-        XCTAssertEqual((actualError as NSError?)?.domain, "ValidationError")
-        XCTAssertEqual((actualError as NSError?)?.code, 400)
-        XCTAssertEqual((actualError as NSError?)?.localizedDescription, "Server validation: Event name and city cannot be empty.")
+        guard let networkErr = actualError as? NetworkError else {
+            XCTFail("Error was not a NetworkError: \(String(describing: actualError))")
+            return
+        }
+        XCTAssertEqual(networkErr, NetworkError.validationError("Server validation: Event name and city cannot be empty."),
+                       "Expected validation error for empty name.")
     }
 
     func testCreateEvent_Failure_EmptyCity() {
@@ -721,9 +769,12 @@ class NetworkServiceTests: XCTestCase {
         
         XCTAssertNil(createdEvent)
         XCTAssertNotNil(actualError)
-        XCTAssertEqual((actualError as NSError?)?.domain, "ValidationError")
-        XCTAssertEqual((actualError as NSError?)?.code, 400)
-        XCTAssertEqual((actualError as NSError?)?.localizedDescription, "Server validation: Event name and city cannot be empty.")
+        guard let networkErr = actualError as? NetworkError else {
+            XCTFail("Error was not a NetworkError: \(String(describing: actualError))")
+            return
+        }
+        XCTAssertEqual(networkErr, NetworkError.validationError("Server validation: Event name and city cannot be empty."),
+                       "Expected validation error for empty city.")
     }
 
     // MARK: - Register For Event Tests
@@ -763,8 +814,7 @@ class NetworkServiceTests: XCTestCase {
         let expectation = self.expectation(description: "FetchBotMessageResponse success expectation")
         
         // 1. Prepare mock data
-        // Using the fully qualified name as ServerChatMessage is nested in NetworkService
-        let mockMessage = NetworkService.ServerChatMessage(text: "Привет! Как я могу помочь?", user: "Bot")
+        let mockMessage = ServerChatMessage(text: "Привет! Как я могу помочь?", user: "Bot")
         let mockJsonData = try JSONEncoder().encode(mockMessage)
         
         // 2. Configure mock session
@@ -774,7 +824,7 @@ class NetworkServiceTests: XCTestCase {
                                                  httpVersion: nil,
                                                  headerFields: nil)
         
-        var actualMessage: NetworkService.ServerChatMessage?
+        var actualMessage: ServerChatMessage?
         var actualError: Error?
         
         // 3. Call the method
@@ -811,7 +861,7 @@ class NetworkServiceTests: XCTestCase {
         mockSession.nextError = expectedError
         mockSession.nextResponse = HTTPURLResponse(url: URL(string: "https://r2.mocker.surfstudio.ru/qa_trainee/message")!, statusCode: 200, httpVersion: nil, headerFields: nil)
 
-        var actualMessage: NetworkService.ServerChatMessage?
+        var actualMessage: ServerChatMessage?
         var actualError: Error?
         
         sut.fetchBotMessageResponse { result in
@@ -826,8 +876,12 @@ class NetworkServiceTests: XCTestCase {
         XCTAssertTrue(mockSession.nextDataTask.resumeWasCalled)
         XCTAssertNil(actualMessage)
         XCTAssertNotNil(actualError)
-        XCTAssertEqual((actualError as NSError?)?.domain, expectedError.domain)
-        XCTAssertEqual((actualError as NSError?)?.code, expectedError.code)
+        guard let networkErr = actualError as? NetworkError else {
+            XCTFail("Error was not a NetworkError: \(String(describing: actualError))")
+            return
+        }
+        XCTAssertEqual(networkErr, NetworkError.networkRequestFailed(expectedError),
+                       "Expected .networkRequestFailed(\(expectedError.localizedDescription)), got \(networkErr.localizedDescription)")
     }
 
     func testFetchBotMessageResponse_Failure_HTTPError() {
@@ -836,7 +890,7 @@ class NetworkServiceTests: XCTestCase {
         let httpErrorStatusCode = 401
         mockSession.nextResponse = HTTPURLResponse(url: URL(string: "https://r2.mocker.surfstudio.ru/qa_trainee/message")!, statusCode: httpErrorStatusCode, httpVersion: nil, headerFields: nil)
 
-        var actualMessage: NetworkService.ServerChatMessage?
+        var actualMessage: ServerChatMessage?
         var actualError: Error?
         
         sut.fetchBotMessageResponse { result in
@@ -851,9 +905,12 @@ class NetworkServiceTests: XCTestCase {
         XCTAssertTrue(mockSession.nextDataTask.resumeWasCalled)
         XCTAssertNil(actualMessage)
         XCTAssertNotNil(actualError)
-        XCTAssertEqual((actualError as NSError?)?.domain, "NetworkServiceError")
-        XCTAssertEqual((actualError as NSError?)?.code, httpErrorStatusCode)
-        XCTAssertTrue(((actualError as NSError?)?.localizedDescription.contains("\(httpErrorStatusCode)")) ?? false, "Error message should contain status code")
+        guard let networkErr = actualError as? NetworkError else {
+            XCTFail("Error was not a NetworkError: \(String(describing: actualError))")
+            return
+        }
+        XCTAssertEqual(networkErr, NetworkError.invalidResponse(statusCode: httpErrorStatusCode),
+                       "Expected .invalidResponse with status \(httpErrorStatusCode), got \(networkErr.localizedDescription)")
     }
 
     func testFetchBotMessageResponse_Failure_NoData() {
@@ -862,7 +919,7 @@ class NetworkServiceTests: XCTestCase {
         mockSession.nextData = nil
         mockSession.nextResponse = HTTPURLResponse(url: URL(string: "https://r2.mocker.surfstudio.ru/qa_trainee/message")!, statusCode: 200, httpVersion: nil, headerFields: nil)
         
-        var actualMessage: NetworkService.ServerChatMessage?
+        var actualMessage: ServerChatMessage?
         var actualError: Error?
         
         sut.fetchBotMessageResponse { result in
@@ -877,9 +934,12 @@ class NetworkServiceTests: XCTestCase {
         XCTAssertTrue(mockSession.nextDataTask.resumeWasCalled)
         XCTAssertNil(actualMessage)
         XCTAssertNotNil(actualError)
-        XCTAssertEqual((actualError as NSError?)?.domain, "NetworkServiceError")
-        XCTAssertEqual((actualError as NSError?)?.code, -22) // Specific code in NetworkService
-        XCTAssertEqual((actualError as NSError?)?.localizedDescription, "Данные ответного сообщения не были получены от сервера.")
+        guard let networkErr = actualError as? NetworkError else {
+            XCTFail("Error was not a NetworkError: \(String(describing: actualError))")
+            return
+        }
+        XCTAssertEqual(networkErr, NetworkError.noData,
+                       "Expected .noData, got \(networkErr.localizedDescription)")
     }
 
     func testFetchBotMessageResponse_Failure_DecodingError() throws {
@@ -891,7 +951,7 @@ class NetworkServiceTests: XCTestCase {
         mockSession.nextData = mockJsonData
         mockSession.nextResponse = HTTPURLResponse(url: URL(string: "https://r2.mocker.surfstudio.ru/qa_trainee/message")!, statusCode: 200, httpVersion: nil, headerFields: nil)
         
-        var actualMessage: NetworkService.ServerChatMessage?
+        var actualMessage: ServerChatMessage?
         var actualError: Error?
         
         sut.fetchBotMessageResponse { result in
@@ -906,7 +966,11 @@ class NetworkServiceTests: XCTestCase {
         XCTAssertTrue(mockSession.nextDataTask.resumeWasCalled)
         XCTAssertNil(actualMessage)
         XCTAssertNotNil(actualError)
-        XCTAssertTrue(actualError is DecodingError, "Error should be a DecodingError, but was \(type(of: actualError!))")
+        guard let networkErr = actualError as? NetworkError else {
+            XCTFail("Error was not a NetworkError: \(String(describing: actualError))")
+            return
+        }
+        guard case .decodingError = networkErr else { XCTFail("Expected .decodingError, got \(networkErr)"); return }
     }
 
 }
