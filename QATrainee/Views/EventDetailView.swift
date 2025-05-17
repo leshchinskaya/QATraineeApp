@@ -9,6 +9,8 @@ struct EventDetailView: View {
     @State private var isRegistering = false 
 
     // Bug: Date formatting susceptible to locale issues.
+    private let accentColor = Color(red: 0.353, green: 0.404, blue: 0.847) // #5A67D8
+
     private var dateFormatterWithLocaleBug: DateFormatter {
         let formatter = DateFormatter()
         formatter.dateFormat = "EEEE, MMM d, yyyy 'в' H:mm a zzz"
@@ -22,50 +24,55 @@ struct EventDetailView: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 15) {
+            VStack(alignment: .leading, spacing: 18) {
                 Text(event.name)
-                    .font(.largeTitle)
-                    .fontWeight(.bold)
+                    .font(.system(size: 28, weight: .bold))
                     .accessibilityIdentifier("eventDetailTitle_\(event.name)")
 
                 Text("Организатор: \(event.organizer)")
-                    .font(.title3)
-                    .foregroundColor(Color.orange) 
+                    .font(.system(size: 18, weight: .medium))
+                    .foregroundColor(accentColor)
                     .accessibilityIdentifier("eventDetailOrganizer_\(event.organizer)")
 
-                HStack {
+                HStack(spacing: 8) {
                     Image(systemName: "calendar")
+                        .foregroundColor(accentColor)
                     Text("\(event.date, formatter: dateFormatterWithLocaleBug)")
+                        .font(.system(size: 16))
                 }
                 .accessibilityElement(children: .combine)
                 .accessibilityIdentifier("eventDetailDate")
 
-                HStack {
+                HStack(spacing: 8) {
                     Image(systemName: "mappin.and.ellipse")
+                        .foregroundColor(accentColor)
                     Text(event.city)
+                        .font(.system(size: 16))
                 }
                 .accessibilityElement(children: .combine)
                 .accessibilityIdentifier("eventDetailCity_\(event.city)")
 
-                HStack {
+                HStack(spacing: 8) {
                     Image(systemName: "tag.fill")
+                        .foregroundColor(accentColor)
                     Text(event.category)
+                        .font(.system(size: 16))
                 }
                 .accessibilityElement(children: .combine)
                 .accessibilityIdentifier("eventDetailCategory_\(event.category)")
 
                 Text("Об этом событии:")
-                    .font(.title2)
+                    .font(.system(size: 22, weight: .bold))
                     .padding(.top)
                 
                 Text(event.description)
-                    .font(.body)
-                    .foregroundColor(Color(UIColor.darkGray)) 
+                    .font(.system(size: 16))
+                    .foregroundColor(Color(UIColor.label))
                     .padding(.bottom)
                     .accessibilityIdentifier("eventDetailDescription")
                 
                 Text("Участники: \(event.attendees.count)")
-                    .font(.headline)
+                    .font(.system(size: 16, weight: .medium))
                     .accessibilityIdentifier("eventDetailAttendeesCount")
 
                 Spacer()
@@ -74,18 +81,21 @@ struct EventDetailView: View {
                     HStack {
                         if isRegistering {
                             ProgressView()
+                                .tint(.white)
                                 .padding(.trailing, 5)
                             Text(event.isRegistered ? "Отменяем регистрацию..." : "Регистрация...")
+                                .font(.system(size: 18, weight: .semibold))
                         } else {
-                            Text(event.isRegistered ? "Зарегистрирован (Отмена - НР)" : "Зарегистрироваться")
+                            Text(event.isRegistered ? "Вы зарегистрированы" : "Зарегистрироваться")
+                                .font(.system(size: 18, weight: .semibold))
                         }
                     }
-                    .font(.headline)
                     .foregroundColor(.white)
-                    .padding(EdgeInsets(top: 5, leading: 10, bottom: 5, trailing: 10)) 
+                    .padding()
                     .frame(maxWidth: .infinity)
-                    .background(isRegistering ? Color.gray.opacity(0.5) : (event.isRegistered ? Color.gray : Color.blue))
-                    .cornerRadius(5)
+                    .background(isRegistering ? Color.gray.opacity(0.7) : (event.isRegistered ? Color.green.opacity(0.8) : accentColor))
+                    .cornerRadius(10)
+                    .shadow(color: accentColor.opacity(event.isRegistered || isRegistering ? 0 : 0.3), radius: 5, x: 0, y: 3)
                 }
                 .accessibilityIdentifier("registerButton_\(event.name)")
                 .disabled(isRegistering || (event.isRegistered && isEventOver)) 
@@ -102,6 +112,7 @@ struct EventDetailView: View {
             ToolbarItem(placement: .navigationBarTrailing) {
                 NavigationLink(destination: ChatView(eventName: event.name)) {
                     Image(systemName: "message.fill")
+                        .foregroundColor(accentColor)
                 }
                 .accessibilityIdentifier("chatButton_\(event.name)")
             }
@@ -140,6 +151,7 @@ struct EventDetailView_Previews: PreviewProvider {
     static var previews: some View {
         // Для предварительного просмотра создадим несколько событий на русском
         // Это не повлияет на основную логику sampleEvents, но сделает превью более релевантным
+        let accent = Color(red: 0.353, green: 0.404, blue: 0.847)
         let sampleRussianEventPast = Event(id: UUID(), name: "Прошедший Рок Концерт", date: Calendar.current.date(byAdding: .day, value: -5, to: Date())!, city: "Москва", category: "Музыка", description: "Легендарный рок концерт, который уже прошел.", organizer: "Рок Продакшн")
         let sampleRussianEventFuture = Event(id: UUID(), name: "Тех Конференция 2025", date: Calendar.current.date(byAdding: .month, value: 3, to: Date())!, city: "Санкт-Петербург", category: "Конференция", description: "Главная тех конференция года.", isRegistered: false, organizer: "Тех Гуру")
         let sampleRussianEventRegistered = Event(id: UUID(), name: "Местный Благотворительный Забег", date: Calendar.current.date(byAdding: .weekOfYear, value: 2, to: Date())!, city: "Казань", category: "Спорт", description: "Пробегитесь ради доброго дела!", isRegistered: true, organizer: "Клуб Бегунов Казани", attendees: ["CurrentUser"])
@@ -152,6 +164,12 @@ struct EventDetailView_Previews: PreviewProvider {
         NavigationView {
             EventDetailView(event: .constant(sampleRussianEventFuture))
                 .previewDisplayName("Детали Текущего События")
+                .environment(\.colorScheme, .light)
+        }
+        NavigationView {
+            EventDetailView(event: .constant(sampleRussianEventFuture))
+                .previewDisplayName("Детали Текущего События (Темная)")
+                .environment(\.colorScheme, .dark)
         }
         NavigationView {
              EventDetailView(event: .constant(sampleRussianEventRegistered))

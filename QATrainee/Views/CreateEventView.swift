@@ -15,23 +15,28 @@ struct CreateEventView: View {
     @State private var alertMessage = ""
     
     @State private var isSubmitting = false
+    private let accentColor = Color(red: 0.353, green: 0.404, blue: 0.847) // #5A67D8
 
     var body: some View {
         NavigationView {
             Form {
-                Section(header: Text("Детали события")) { // Was "Event Details"
+                Section(header: Text("Детали события").font(.system(size: 16, weight: .medium))) { // Was "Event Details" // Font updated
                     TextField("Название события", text: $eventName) // Was "Event Name"
+                        .font(.system(size: 16))
                         .accessibilityIdentifier("createEventNameField")
                     DatePicker("Дата", selection: $eventDate, displayedComponents: .date) // Was "Date"
+                        .font(.system(size: 16))
                         .accessibilityIdentifier("createEventDateField")
                     TextField("Город", text: $eventCity) // Was "City"
+                        .font(.system(size: 16))
                         .accessibilityIdentifier("createEventCityField")
                     
                     Picker("Категория", selection: $eventCategory) { // Was "Category"
                         ForEach(categories, id: \.self) {
-                            Text($0)
+                            Text($0).font(.system(size: 16)) // Font updated
                         }
                     }
+                    .font(.system(size: 16)) // Font for Picker label
                     .accessibilityIdentifier("createEventCategoryPicker")
                     .onAppear {
                         if eventCategory.isEmpty {
@@ -41,32 +46,44 @@ struct CreateEventView: View {
 
                     TextField("Организатор (Ваше имя)", text: $organizerName) // Was "Organizer (Your Name)"
                         .disabled(true)
+                        .font(.system(size: 16))
                         .accessibilityIdentifier("createEventOrganizerField")
                 }
 
-                Section(header: Text("Описание")) { // Was "Description"
+                Section(header: Text("Описание").font(.system(size: 16, weight: .medium))) { // Was "Description" // Font updated
                     TextField("Расскажите больше о событии...", text: $eventDescription, axis: .vertical) // Was "Tell us more about the event..."
                         .frame(minHeight: 100, alignment: .topLeading) 
+                        .font(.system(size: 16))
                         .accessibilityIdentifier("createEventDescriptionField")
                 }
                 
                 Button(action: submitEvent) {
-                    if isSubmitting {
-                        HStack {
+                    HStack {
+                        Spacer()
+                        if isSubmitting {
                             Text("Отправка...") // Was "Submitting..."
+                                .font(.system(size: 18, weight: .semibold))
                             ProgressView()
-                                .padding(.leading, 5)
+                                .padding(.leading, 8)
+                                .tint(.white) // Ensure progress view is visible
+                        } else {
+                            Text("Создать событие") // Was "Create Event"
+                                .font(.system(size: 18, weight: .semibold))
                         }
-                        .font(.headline)
-                    } else {
-                        Text("Создать событие") // Was "Create Event"
-                            .font(.headline)
+                        Spacer()
                     }
+                    .padding()
+                    .background(isSubmitting ? Color.gray.opacity(0.7) : accentColor)
+                    .foregroundColor(.white)
+                    .cornerRadius(10)
+                    .shadow(color: accentColor.opacity(isSubmitting ? 0 : 0.3), radius: 5, x: 0, y: 3) // Conditional shadow
                 }
                 .disabled(isSubmitting) 
+                .listRowInsets(EdgeInsets()) // Make button full width in form
                 .accessibilityIdentifier("createEventSubmitButton")
             }
             .navigationTitle("Новое событие") // Was "New Event"
+            .font(.system(size: 16)) // Default font for Form content not explicitly set
             .alert(isPresented: $showingAlert) {
                 Alert(title: Text(alertTitle), message: Text(alertMessage), dismissButton: .default(Text("OK")))
             }

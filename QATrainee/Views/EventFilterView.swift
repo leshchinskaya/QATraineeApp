@@ -13,6 +13,7 @@ struct EventFilterView: View {
     @State private var cityErrorMessage: String?
     // Default city option representing "All"
     private let allCitiesOption = City(id: "Все", name: "Все города", position: CityPosition(lat: "", long: ""))
+    private let accentColor = Color(red: 0.353, green: 0.404, blue: 0.847) // #5A67D8
 
 
     @State private var localStartDate: Date
@@ -32,41 +33,46 @@ struct EventFilterView: View {
     var body: some View {
         NavigationView {
             Form {
-                Section(header: Text("Фильтр по категории")) {
+                Section(header: Text("Фильтр по категории").font(.system(size: 16, weight: .medium))) {
                     Picker("Категория", selection: $selectedCategory) {
                         ForEach(categories, id: \.self) { category in
-                            Text(category)
+                            Text(category).font(.system(size: 16))
                         }
                     }
+                    .font(.system(size: 16)) // For Picker label
                     .pickerStyle(.menu)
                     .accessibilityIdentifier("filterCategoryPicker")
                 }
 
-                Section(header: Text("Фильтр по дате")) {
+                Section(header: Text("Фильтр по дате").font(.system(size: 16, weight: .medium))) {
                     DatePicker("Дата начала", selection: $localStartDate, displayedComponents: .date)
+                        .font(.system(size: 16))
                         .accessibilityIdentifier("filterStartDatePicker")
                     DatePicker("Дата окончания", selection: $localEndDate, displayedComponents: .date)
+                        .font(.system(size: 16))
                         .accessibilityIdentifier("filterEndDatePicker")
                 }
 
-                Section(header: Text("Фильтр по городу")) {
+                Section(header: Text("Фильтр по городу").font(.system(size: 16, weight: .medium))) {
                     if isLoadingCities {
                         HStack {
-                            Text("Загрузка городов...")
-                            ProgressView()
+                            Text("Загрузка городов...").font(.system(size: 16))
+                            ProgressView().tint(accentColor)
                         }
                     } else if let cityErrorMessage = cityErrorMessage {
                         Text("Ошибка: \(cityErrorMessage)")
                             .foregroundColor(.red)
+                            .font(.system(size: 16))
                     } else {
                         Picker("Город", selection: $selectedCity) {
                             // Add "All" option manually at the beginning
-                            Text(allCitiesOption.name).tag(allCitiesOption.id)
+                            Text(allCitiesOption.name).tag(allCitiesOption.id).font(.system(size: 16))
                             
                             ForEach(availableCities) { city in
-                                Text(city.name).tag(city.id)
+                                Text(city.name).tag(city.id).font(.system(size: 16))
                             }
                         }
+                        .font(.system(size: 16)) // For Picker label
                         .pickerStyle(.menu)
                         .accessibilityIdentifier("filterCityPicker")
                     }
@@ -81,9 +87,14 @@ struct EventFilterView: View {
                     print("Фильтры применены: Категория - \(selectedCategory), Город ID - \(selectedCity), Начало - \(startDate), Конец - \(endDate)")
                     dismiss()
                 }
-                .padding(.vertical, 2)
+                .font(.system(size: 18, weight: .semibold))
+                .padding()
                 .frame(maxWidth: .infinity)
-                .background(Color.green.opacity(0.3))
+                .background(accentColor)
+                .foregroundColor(.white)
+                .cornerRadius(10)
+                .shadow(color: accentColor.opacity(0.3), radius: 5, x: 0, y: 3)
+                .listRowInsets(EdgeInsets()) // Make button full width
                 .accessibilityIdentifier("filterApplyButton")
 
                 Button("Сбросить фильтры") {
@@ -96,7 +107,13 @@ struct EventFilterView: View {
                     print("Фильтры сброшены.")
                     dismiss()
                 }
-                .foregroundColor(.red)
+                .font(.system(size: 18, weight: .semibold))
+                .padding() 
+                .frame(maxWidth: .infinity)
+                .foregroundColor(Color.red) // Keeping red for clear destructive action
+                .background(Color.red.opacity(0.1)) // Subtle background for reset button
+                .cornerRadius(10)
+                .listRowInsets(EdgeInsets()) // Make button full width
                 .accessibilityIdentifier("filterResetButton")
             }
             .navigationTitle("Фильтр событий")
@@ -108,7 +125,10 @@ struct EventFilterView: View {
                 endDate = localEndDate
                 // selectedCity is already bound
                 dismiss()
-            }.accessibilityIdentifier("filterDoneButton"))
+            }
+            .font(.system(size: 16, weight: .medium)) // Font for Done button
+            .tint(accentColor) // Accent color for Done button
+            .accessibilityIdentifier("filterDoneButton"))
             .onAppear {
                 fetchCityData()
             }
@@ -146,5 +166,6 @@ struct EventFilterView_Previews: PreviewProvider {
             endDate: .constant(Date().addingTimeInterval(86400*7)),
             selectedCity: .constant("Все") // Preview with "All" city ID
         )
+        .environment(\.colorScheme, .dark) // Example dark mode preview
     }
 } 

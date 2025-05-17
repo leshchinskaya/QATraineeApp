@@ -12,16 +12,18 @@ struct ProfileView: View {
             VStack {
                 if isLoading {
                     ProgressView("Загрузка профиля...")
+                        .accessibilityIdentifier("profileLoadingIndicator")
                         .padding()
                 } else if let errorMessage = errorMessage {
                     Text("Ошибка: \(errorMessage)")
+                        .accessibilityIdentifier("profileErrorMessageText")
                         .foregroundColor(.red)
                         .padding()
                         .multilineTextAlignment(.center)
                 } else if let profile = userProfile {
                     Form {
                         Section(header: Text("Основная информация")) {
-                            ProfileRow(label: "ID", value: profile.id)
+                            ProfileRow(label: "ID", value: profile.id, identifierLabel: "ID")
                             ProfileRow(label: "Имя", value: profile.firstName ?? "Не указано")
                             ProfileRow(label: "Фамилия", value: profile.lastName ?? "Не указано")
                         }
@@ -36,9 +38,11 @@ struct ProfileView: View {
                             ProfileRow(label: "Пол", value: profile.displaySex)
                         }
                     }
+                    .accessibilityIdentifier("profileForm")
                 } else {
                     Text("Профиль не загружен.")
                         .padding()
+                        .accessibilityIdentifier("profileNotLoadedText")
                 }
             }
             .navigationTitle("Профиль")
@@ -78,6 +82,7 @@ struct ProfileView: View {
 struct ProfileRow: View {
     let label: String
     let value: String
+    var identifierLabel: String? // For simpler identifiers if needed, defaults to label
 
     var body: some View {
         HStack {
@@ -89,6 +94,8 @@ struct ProfileRow: View {
         }
         .accessibilityElement(children: .combine)
         .accessibilityLabel("\(label): \(value)")
+        // Use a sanitized version of the label for the identifier
+        .accessibilityIdentifier("profileRow_\((identifierLabel ?? label).filter { !$0.isWhitespace && ($0.isLetter || $0.isNumber) })")
     }
 }
 

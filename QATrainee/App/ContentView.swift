@@ -16,23 +16,28 @@ struct ContentView: View {
             EventListView()
                 .tabItem {
                     Label("События", systemImage: "list.bullet")
+                        .accessibilityIdentifier("eventListTabLabel")
                 }
 
             CreateEventView()
                 .tabItem {
                     Label("Создать", systemImage: "plus.circle.fill")
+                        .accessibilityIdentifier("createEventTabLabel")
                 }
             
             ChatView(eventName: nil) // Generic chat for the tab, no specific event
                 .tabItem {
                     Label("Чат", systemImage: "message.fill")
+                        .accessibilityIdentifier("chatTabLabel")
                 }
 
             ProfileView() // Use the new ProfileView
                 .tabItem {
                     Label("Профиль", systemImage: "person.crop.circle")
+                        .accessibilityIdentifier("profileTabLabel")
                 }
         }
+        .accessibilityIdentifier("mainTabView")
     }
 }
 
