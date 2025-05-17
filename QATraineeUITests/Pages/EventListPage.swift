@@ -6,11 +6,12 @@
 //
 
 import XCTest
+import SharedAccessibilityIDs
 
 class EventListPage: BasePage {
     // MARK: - Elements
     private lazy var navigationBar = app.navigationBars[UITestConstants.NavigationBarTitles.eventList]
-    private lazy var loadingIndicator = app.otherElements[UITestConstants.AccessibilityID.eventListLoadingIndicator]
+    private lazy var loadingIndicator = app.otherElements[AccessibilityID.eventListLoadingIndicator]
     private lazy var eventRowQuery = app.buttons.matching(UITestConstants.Predicates.eventRow)
     
     var firstEventCell: XCUIElement {

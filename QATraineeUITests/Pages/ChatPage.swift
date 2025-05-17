@@ -6,13 +6,14 @@
 //
 
 import XCTest
+import SharedAccessibilityIDs
 
 class ChatPage: BasePage {
     // MARK: - Elements
     private lazy var navigationBar = app.navigationBars[UITestConstants.NavigationBarTitles.eventChat]
-    private lazy var messageTextField = app.textFields[UITestConstants.AccessibilityID.chatMessageTextField]
-    private lazy var sendMessageButton = app.buttons[UITestConstants.AccessibilityID.chatSendMessageButton]
-    private lazy var messagesScrollView = app.scrollViews[UITestConstants.AccessibilityID.chatMessagesScrollView]
+    private lazy var messageTextField = app.textFields[AccessibilityID.chatMessageTextField]
+    private lazy var sendMessageButton = app.buttons[AccessibilityID.chatSendMessageButton]
+    private lazy var messagesScrollView = app.scrollViews[AccessibilityID.chatMessagesScrollView]
 
     // MARK: - Actions
     func waitForPageToLoad(timeout: TimeInterval = UITestConstants.Timeouts.short) {

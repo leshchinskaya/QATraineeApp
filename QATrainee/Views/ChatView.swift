@@ -1,4 +1,5 @@
 import SwiftUI
+import SharedAccessibilityIDs
 
 struct ChatView: View {
     var eventName: String?
@@ -29,12 +30,12 @@ struct ChatView: View {
                             ForEach(messages) { message in
                                 ChatMessageView(message: message, accentColor: accentColor)
                                     .id(message.id)
-                                    .accessibilityIdentifier("chatMessage_\(message.id.uuidString)")
+                                    .accessibilityIdentifier(AccessibilityID.chatMessage(id: message.id))
                             }
                         }
                         .padding(.horizontal)
                     }
-                    .accessibilityIdentifier("chatMessagesScrollView")
+                    .accessibilityIdentifier(AccessibilityID.chatMessagesScrollView)
                     .onChange(of: messages.count) { _ in
                         // Auto-scroll to the newest message
                         // Bug: Might be janky or not work reliably in all cases
@@ -49,7 +50,7 @@ struct ChatView: View {
                 // Message input area
                 HStack(spacing: 12) { // Added spacing
                     TextField("Введите сообщение...", text: $newMessageText)
-                        .accessibilityIdentifier("chatMessageTextField")
+                        .accessibilityIdentifier(AccessibilityID.chatMessageTextField)
                         .textFieldStyle(.plain) // Use plain style for more custom look
                         .padding(10) // Add padding inside textfield
                         .background(Color(UIColor.systemGray6).cornerRadius(10)) // Background for textfield
@@ -62,7 +63,7 @@ struct ChatView: View {
                             .frame(width: 32, height: 32) // Increased size
                             .foregroundColor(newMessageText.isEmpty ? .gray : accentColor) // Use accent color, gray when disabled
                     }
-                    .accessibilityIdentifier("chatSendMessageButton")
+                    .accessibilityIdentifier(AccessibilityID.chatSendMessageButton)
                     .padding(.trailing)
                     // Bug: Button has no padding around the image itself, icon is flush with button edges
                     .disabled(newMessageText.isEmpty) // Basic validation

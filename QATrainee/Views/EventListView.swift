@@ -1,4 +1,5 @@
 import SwiftUI
+import SharedAccessibilityIDs
 
 struct EventListView: View {
     @State private var allEvents: [Event] = [] // Store all events, fetched from service
@@ -35,7 +36,7 @@ struct EventListView: View {
                     ProgressView("Загрузка событий...") // Was "Fetching events, please wait..." // MODIFIED
                         .padding()
                         .tint(accentColor)
-                        .accessibilityIdentifier("eventListLoadingIndicator")
+                        .accessibilityIdentifier(AccessibilityID.eventListLoadingIndicator)
                         // REMOVED: .foregroundColor(.gray)
                 }
                 
@@ -73,7 +74,7 @@ struct EventListView: View {
                                 .font(.system(size: 16, weight: .medium))
                         }
                         .tint(accentColor) // Use accent color for the button
-                        .accessibilityIdentifier("showFiltersButton")
+                        .accessibilityIdentifier(AccessibilityID.showFiltersButton)
                         // REMOVED: .foregroundColor(Color.blue)
                     }
 
@@ -122,7 +123,7 @@ struct EventListView: View {
                                 .listRowSeparator(.hidden) // ADDED: Hide default separators
                                 // REMOVED .padding(.horizontal)
                                 // REMOVED .padding(.vertical, 8)
-                                .accessibilityIdentifier("eventRow_\(event.id.uuidString)")
+                                .accessibilityIdentifier(AccessibilityID.eventRow(eventId: event.id))
                             }
                         }
                     }

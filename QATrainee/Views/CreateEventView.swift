@@ -1,4 +1,5 @@
 import SwiftUI
+import SharedAccessibilityIDs
 
 struct CreateEventView: View {
     @State private var eventName: String = ""
@@ -23,13 +24,13 @@ struct CreateEventView: View {
                 Section(header: Text("Детали события").font(.system(size: 16, weight: .medium))) { // Was "Event Details" // Font updated
                     TextField("Название события", text: $eventName) // Was "Event Name"
                         .font(.system(size: 16))
-                        .accessibilityIdentifier("createEventNameField")
+                        .accessibilityIdentifier(AccessibilityID.createEventNameField)
                     DatePicker("Дата", selection: $eventDate, displayedComponents: .date) // Was "Date"
                         .font(.system(size: 16))
-                        .accessibilityIdentifier("createEventDateField")
+                        .accessibilityIdentifier(AccessibilityID.createEventDateField)
                     TextField("Город", text: $eventCity) // Was "City"
                         .font(.system(size: 16))
-                        .accessibilityIdentifier("createEventCityField")
+                        .accessibilityIdentifier(AccessibilityID.createEventCityField)
                     
                     Picker("Категория", selection: $eventCategory) { // Was "Category"
                         ForEach(categories, id: \.self) {
@@ -37,7 +38,7 @@ struct CreateEventView: View {
                         }
                     }
                     .font(.system(size: 16)) // Font for Picker label
-                    .accessibilityIdentifier("createEventCategoryPicker")
+                    .accessibilityIdentifier(AccessibilityID.createEventCategoryPicker)
                     .onAppear {
                         if eventCategory.isEmpty {
                             eventCategory = categories.first ?? "Другое" // Was "Other"
@@ -47,14 +48,14 @@ struct CreateEventView: View {
                     TextField("Организатор (Ваше имя)", text: $organizerName) // Was "Organizer (Your Name)"
                         .disabled(true)
                         .font(.system(size: 16))
-                        .accessibilityIdentifier("createEventOrganizerField")
+                        .accessibilityIdentifier(AccessibilityID.createEventOrganizerField)
                 }
 
                 Section(header: Text("Описание").font(.system(size: 16, weight: .medium))) { // Was "Description" // Font updated
                     TextField("Расскажите больше о событии...", text: $eventDescription, axis: .vertical) // Was "Tell us more about the event..."
                         .frame(minHeight: 100, alignment: .topLeading) 
                         .font(.system(size: 16))
-                        .accessibilityIdentifier("createEventDescriptionField")
+                        .accessibilityIdentifier(AccessibilityID.createEventDescriptionField)
                 }
                 
                 Button(action: submitEvent) {
@@ -80,7 +81,7 @@ struct CreateEventView: View {
                 }
                 .disabled(isSubmitting) 
                 .listRowInsets(EdgeInsets()) // Make button full width in form
-                .accessibilityIdentifier("createEventSubmitButton")
+                .accessibilityIdentifier(AccessibilityID.createEventSubmitButton)
             }
             .navigationTitle("Новое событие") // Was "New Event"
             .font(.system(size: 16)) // Default font for Form content not explicitly set
@@ -105,7 +106,7 @@ struct CreateEventView: View {
             switch result {
             case .success(let newEvent):
                 alertTitle = "Успех!" // Was "Success!"
-                alertMessage = "Событие '\(newEvent.name)' было отправлено (симуляция)." // Was "'...' has been submitted (simulated)."
+                alertMessage = "Событие '\(newEvent.name)' было отправлено."
                 clearForm()
             case .failure(let error):
                 alertTitle = "Ошибка отправки" // Was "Submission Failed"

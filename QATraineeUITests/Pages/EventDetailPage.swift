@@ -6,14 +6,14 @@
 //
 
 import XCTest
+import SharedAccessibilityIDs
 
 class EventDetailPage: BasePage {
     // MARK: - Elements
-    // private lazy var eventDescriptionText = app.staticTexts.matching(identifier: UITestConstants.AccessibilityID.eventDetailDescription).firstMatch
-    private lazy var eventDescriptionText = app.staticTexts[UITestConstants.AccessibilityID.eventDetailDescription]
+    private lazy var eventDescriptionText = app.staticTexts[AccessibilityID.eventDetailDescription]
 
     // MARK: - Verification
     func verifyEventDescriptionIsVisible(timeout: TimeInterval = UITestConstants.Timeouts.medium) {
-        XCTAssertTrue(eventDescriptionText.waitForExistence(timeout: timeout), "Event detail description ('\(UITestConstants.AccessibilityID.eventDetailDescription)') not found.")
+        XCTAssertTrue(eventDescriptionText.waitForExistence(timeout: timeout), "Event detail description ('\(AccessibilityID.eventDetailDescription)') not found.")
     }
 } 

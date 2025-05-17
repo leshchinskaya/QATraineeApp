@@ -6,12 +6,13 @@
 //
 
 import XCTest
+import SharedAccessibilityIDs
 
 class ProfilePage: BasePage {
     // MARK: - Elements
     private lazy var navigationBar = app.navigationBars[UITestConstants.NavigationBarTitles.profile]
-    private lazy var loadingIndicator = app.otherElements[UITestConstants.AccessibilityID.profileLoadingIndicator]
-    private lazy var profileNameRow = app.otherElements[UITestConstants.AccessibilityID.profileNameRow]
+    private lazy var loadingIndicator = app.otherElements[AccessibilityID.profileLoadingIndicator]
+    private lazy var profileNameRow = app.otherElements[AccessibilityID.profileNameRow]
 
     // MARK: - Actions
     func waitForPageToLoad(timeout: TimeInterval = UITestConstants.Timeouts.short) {
@@ -26,6 +27,6 @@ class ProfilePage: BasePage {
 
     // MARK: - Verification
     func verifyProfileNameIsVisible(timeout: TimeInterval = UITestConstants.Timeouts.long) {
-        XCTAssertTrue(profileNameRow.waitForExistence(timeout: timeout), "Profile name data ('\(UITestConstants.AccessibilityID.profileNameRow)') not loaded/visible.")
+        XCTAssertTrue(profileNameRow.waitForExistence(timeout: timeout), "Profile name data ('\(AccessibilityID.profileNameRow)') not loaded/visible.")
     }
 } 

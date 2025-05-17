@@ -1,4 +1,5 @@
 import SwiftUI
+import SharedAccessibilityIDs
 
 struct EventDetailView: View {
     @Binding var event: Event
@@ -27,12 +28,12 @@ struct EventDetailView: View {
             VStack(alignment: .leading, spacing: 18) {
                 Text(event.name)
                     .font(.system(size: 28, weight: .bold))
-                    .accessibilityIdentifier("eventDetailTitle_\(event.name)")
+                    .accessibilityIdentifier(AccessibilityID.eventDetailTitle(eventName: event.name))
 
                 Text("Организатор: \(event.organizer)")
                     .font(.system(size: 18, weight: .medium))
                     .foregroundColor(accentColor)
-                    .accessibilityIdentifier("eventDetailOrganizer_\(event.organizer)")
+                    .accessibilityIdentifier(AccessibilityID.eventDetailOrganizer(organizerName: event.organizer))
 
                 HStack(spacing: 8) {
                     Image(systemName: "calendar")
@@ -41,7 +42,7 @@ struct EventDetailView: View {
                         .font(.system(size: 16))
                 }
                 .accessibilityElement(children: .combine)
-                .accessibilityIdentifier("eventDetailDate")
+                .accessibilityIdentifier(AccessibilityID.eventDetailDate)
 
                 HStack(spacing: 8) {
                     Image(systemName: "mappin.and.ellipse")
@@ -50,7 +51,7 @@ struct EventDetailView: View {
                         .font(.system(size: 16))
                 }
                 .accessibilityElement(children: .combine)
-                .accessibilityIdentifier("eventDetailCity_\(event.city)")
+                .accessibilityIdentifier(AccessibilityID.eventDetailCity(cityName: event.city))
 
                 HStack(spacing: 8) {
                     Image(systemName: "tag.fill")
@@ -59,7 +60,7 @@ struct EventDetailView: View {
                         .font(.system(size: 16))
                 }
                 .accessibilityElement(children: .combine)
-                .accessibilityIdentifier("eventDetailCategory_\(event.category)")
+                .accessibilityIdentifier(AccessibilityID.eventDetailCategory(categoryName: event.category))
 
                 Text("Об этом событии:")
                     .font(.system(size: 22, weight: .bold))
@@ -69,11 +70,11 @@ struct EventDetailView: View {
                     .font(.system(size: 16))
                     .foregroundColor(Color(UIColor.label))
                     .padding(.bottom)
-                    .accessibilityIdentifier("eventDetailDescription")
+                    .accessibilityIdentifier(AccessibilityID.eventDetailDescription)
                 
                 Text("Участники: \(event.attendees.count)")
                     .font(.system(size: 16, weight: .medium))
-                    .accessibilityIdentifier("eventDetailAttendeesCount")
+                    .accessibilityIdentifier(AccessibilityID.eventDetailAttendeesCount)
 
                 Spacer()
 
@@ -97,11 +98,11 @@ struct EventDetailView: View {
                     .cornerRadius(10)
                     .shadow(color: accentColor.opacity(event.isRegistered || isRegistering ? 0 : 0.3), radius: 5, x: 0, y: 3)
                 }
-                .accessibilityIdentifier("registerButton_\(event.name)")
+                .accessibilityIdentifier(AccessibilityID.registerButton(eventName: event.name))
                 .disabled(isRegistering || (event.isRegistered && isEventOver)) 
             }
             .padding()
-            .accessibilityIdentifier("eventDetailMainVStack")
+            .accessibilityIdentifier(AccessibilityID.eventDetailMainVStack)
         }
         .navigationTitle(event.name)
         .navigationBarTitleDisplayMode(.inline)
@@ -114,7 +115,7 @@ struct EventDetailView: View {
                     Image(systemName: "message.fill")
                         .foregroundColor(accentColor)
                 }
-                .accessibilityIdentifier("chatButton_\(event.name)")
+                .accessibilityIdentifier(AccessibilityID.chatButton(eventName: event.name))
             }
         }
     }

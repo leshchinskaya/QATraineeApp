@@ -6,14 +6,15 @@
 //
 
 import XCTest
+import SharedAccessibilityIDs
 
 class CreateEventPage: BasePage {
     // MARK: - Elements
     private lazy var navigationBar = app.navigationBars[UITestConstants.NavigationBarTitles.newEvent]
-    private lazy var eventNameField = app.textFields[UITestConstants.AccessibilityID.createEventNameField]
-    private lazy var eventCityField = app.textFields[UITestConstants.AccessibilityID.createEventCityField]
-    private lazy var eventDescriptionField = app.textFields[UITestConstants.AccessibilityID.createEventDescriptionField]
-    private lazy var createButton = app.buttons[UITestConstants.AccessibilityID.createEventSubmitButton]
+    private lazy var eventNameField = app.textFields[AccessibilityID.createEventNameField]
+    private lazy var eventCityField = app.textFields[AccessibilityID.createEventCityField]
+    private lazy var eventDescriptionField = app.textFields[AccessibilityID.createEventDescriptionField]
+    private lazy var createButton = app.buttons[AccessibilityID.createEventSubmitButton]
     private lazy var successAlert = app.alerts[UITestConstants.Alerts.successTitle]
     private lazy var successAlertOKButton = successAlert.buttons[UITestConstants.Alerts.okButton]
 

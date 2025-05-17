@@ -1,4 +1,5 @@
 import SwiftUI
+import SharedAccessibilityIDs
 
 struct EventFilterView: View {
     @Binding var selectedCategory: String
@@ -41,16 +42,16 @@ struct EventFilterView: View {
                     }
                     .font(.system(size: 16)) // For Picker label
                     .pickerStyle(.menu)
-                    .accessibilityIdentifier("filterCategoryPicker")
+                    .accessibilityIdentifier(AccessibilityID.filterCategoryPicker)
                 }
 
                 Section(header: Text("Фильтр по дате").font(.system(size: 16, weight: .medium))) {
                     DatePicker("Дата начала", selection: $localStartDate, displayedComponents: .date)
                         .font(.system(size: 16))
-                        .accessibilityIdentifier("filterStartDatePicker")
+                        .accessibilityIdentifier(AccessibilityID.filterStartDatePicker)
                     DatePicker("Дата окончания", selection: $localEndDate, displayedComponents: .date)
                         .font(.system(size: 16))
-                        .accessibilityIdentifier("filterEndDatePicker")
+                        .accessibilityIdentifier(AccessibilityID.filterEndDatePicker)
                 }
 
                 Section(header: Text("Фильтр по городу").font(.system(size: 16, weight: .medium))) {
@@ -74,7 +75,7 @@ struct EventFilterView: View {
                         }
                         .font(.system(size: 16)) // For Picker label
                         .pickerStyle(.menu)
-                        .accessibilityIdentifier("filterCityPicker")
+                        .accessibilityIdentifier(AccessibilityID.filterCityPicker)
                     }
                 }
                 
@@ -95,7 +96,7 @@ struct EventFilterView: View {
                 .cornerRadius(10)
                 .shadow(color: accentColor.opacity(0.3), radius: 5, x: 0, y: 3)
                 .listRowInsets(EdgeInsets()) // Make button full width
-                .accessibilityIdentifier("filterApplyButton")
+                .accessibilityIdentifier(AccessibilityID.filterApplyButton)
 
                 Button("Сбросить фильтры") {
                     selectedCategory = "Все"
@@ -114,7 +115,7 @@ struct EventFilterView: View {
                 .background(Color.red.opacity(0.1)) // Subtle background for reset button
                 .cornerRadius(10)
                 .listRowInsets(EdgeInsets()) // Make button full width
-                .accessibilityIdentifier("filterResetButton")
+                .accessibilityIdentifier(AccessibilityID.filterResetButton)
             }
             .navigationTitle("Фильтр событий")
             .navigationBarItems(trailing: Button("Готово") {
@@ -128,7 +129,7 @@ struct EventFilterView: View {
             }
             .font(.system(size: 16, weight: .medium)) // Font for Done button
             .tint(accentColor) // Accent color for Done button
-            .accessibilityIdentifier("filterDoneButton"))
+            .accessibilityIdentifier(AccessibilityID.filterDoneButton))
             .onAppear {
                 fetchCityData()
             }
