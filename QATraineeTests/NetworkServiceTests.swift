@@ -32,8 +32,9 @@ class NetworkServiceTests: XCTestCase {
         let mockJsonData = try JSONEncoder().encode(mockServerResponse)
         
         // 2. Configure mock session
+        let expectedURL = APIEnvironment.EndpointPath.events.getURL()!
         mockSession.nextData = mockJsonData
-        mockSession.nextResponse = HTTPURLResponse(url: URL(string: "https://r2.mocker.surfstudio.ru/qa_trainee/events")!,
+        mockSession.nextResponse = HTTPURLResponse(url: expectedURL,
                                                  statusCode: 200,
                                                  httpVersion: nil,
                                                  headerFields: nil)
@@ -56,7 +57,7 @@ class NetworkServiceTests: XCTestCase {
         waitForExpectations(timeout: 1.0)
         
         // 5. Assert URL
-        XCTAssertEqual(mockSession.lastURL?.absoluteString, "https://r2.mocker.surfstudio.ru/qa_trainee/events")
+        XCTAssertEqual(mockSession.lastURL, expectedURL)
         
         // 6. Assert resume was called
         XCTAssertTrue(mockSession.nextDataTask.resumeWasCalled)
@@ -80,8 +81,9 @@ class NetworkServiceTests: XCTestCase {
         
         // 1. Configure mock session for network error
         let expectedError = NSError(domain: "NSURLErrorDomain", code: NSURLErrorNotConnectedToInternet, userInfo: nil)
+        let expectedURL = APIEnvironment.EndpointPath.events.getURL()!
         mockSession.nextError = expectedError
-        mockSession.nextResponse = HTTPURLResponse(url: URL(string: "https://r2.mocker.surfstudio.ru/qa_trainee/events")!,
+        mockSession.nextResponse = HTTPURLResponse(url: expectedURL,
                                                  statusCode: 200, // Status code doesn't matter if there's a primary error
                                                  httpVersion: nil,
                                                  headerFields: nil)
@@ -104,7 +106,7 @@ class NetworkServiceTests: XCTestCase {
         waitForExpectations(timeout: 1.0)
         
         // 4. Assert URL
-        XCTAssertEqual(mockSession.lastURL?.absoluteString, "https://r2.mocker.surfstudio.ru/qa_trainee/events")
+        XCTAssertEqual(mockSession.lastURL, expectedURL)
         
         // 5. Assert resume was called
         XCTAssertTrue(mockSession.nextDataTask.resumeWasCalled)
@@ -125,7 +127,8 @@ class NetworkServiceTests: XCTestCase {
         
         // 1. Configure mock session for HTTP error
         let httpErrorStatusCode = 500
-        mockSession.nextResponse = HTTPURLResponse(url: URL(string: "https://r2.mocker.surfstudio.ru/qa_trainee/events")!,
+        let expectedURL = APIEnvironment.EndpointPath.events.getURL()!
+        mockSession.nextResponse = HTTPURLResponse(url: expectedURL,
                                                  statusCode: httpErrorStatusCode,
                                                  httpVersion: nil,
                                                  headerFields: nil)
@@ -149,7 +152,7 @@ class NetworkServiceTests: XCTestCase {
         waitForExpectations(timeout: 1.0)
         
         // 4. Assert URL
-        XCTAssertEqual(mockSession.lastURL?.absoluteString, "https://r2.mocker.surfstudio.ru/qa_trainee/events")
+        XCTAssertEqual(mockSession.lastURL, expectedURL)
         
         // 5. Assert resume was called
         XCTAssertTrue(mockSession.nextDataTask.resumeWasCalled)
@@ -169,8 +172,9 @@ class NetworkServiceTests: XCTestCase {
         let expectation = self.expectation(description: "FetchEvents no data expectation")
         
         // 1. Configure mock session for no data
+        let expectedURL = APIEnvironment.EndpointPath.events.getURL()!
         mockSession.nextData = nil // Explicitly set to nil
-        mockSession.nextResponse = HTTPURLResponse(url: URL(string: "https://r2.mocker.surfstudio.ru/qa_trainee/events")!,
+        mockSession.nextResponse = HTTPURLResponse(url: expectedURL,
                                                  statusCode: 200, // Successful status code
                                                  httpVersion: nil,
                                                  headerFields: nil)
@@ -193,7 +197,7 @@ class NetworkServiceTests: XCTestCase {
         waitForExpectations(timeout: 1.0)
         
         // 4. Assert URL
-        XCTAssertEqual(mockSession.lastURL?.absoluteString, "https://r2.mocker.surfstudio.ru/qa_trainee/events")
+        XCTAssertEqual(mockSession.lastURL, expectedURL)
         
         // 5. Assert resume was called
         XCTAssertTrue(mockSession.nextDataTask.resumeWasCalled)
@@ -217,8 +221,9 @@ class NetworkServiceTests: XCTestCase {
         let mockJsonData = Data(malformedJsonString.utf8)
         
         // 2. Configure mock session
+        let expectedURL = APIEnvironment.EndpointPath.events.getURL()!
         mockSession.nextData = mockJsonData
-        mockSession.nextResponse = HTTPURLResponse(url: URL(string: "https://r2.mocker.surfstudio.ru/qa_trainee/events")!,
+        mockSession.nextResponse = HTTPURLResponse(url: expectedURL,
                                                  statusCode: 200,
                                                  httpVersion: nil,
                                                  headerFields: nil)
@@ -241,7 +246,7 @@ class NetworkServiceTests: XCTestCase {
         waitForExpectations(timeout: 1.0)
         
         // 5. Assert URL
-        XCTAssertEqual(mockSession.lastURL?.absoluteString, "https://r2.mocker.surfstudio.ru/qa_trainee/events")
+        XCTAssertEqual(mockSession.lastURL, expectedURL)
         
         // 6. Assert resume was called
         XCTAssertTrue(mockSession.nextDataTask.resumeWasCalled)
@@ -272,8 +277,9 @@ class NetworkServiceTests: XCTestCase {
         let mockJsonData = try JSONEncoder().encode(mockUserProfile)
 
         // 2. Configure mock session
+        let expectedURL = APIEnvironment.EndpointPath.userProfile.getURL()!
         mockSession.nextData = mockJsonData
-        mockSession.nextResponse = HTTPURLResponse(url: URL(string: "https://r2.mocker.surfstudio.ru/qq_trainee/user/profile")!,
+        mockSession.nextResponse = HTTPURLResponse(url: expectedURL,
                                                  statusCode: 200,
                                                  httpVersion: nil,
                                                  headerFields: nil)
@@ -296,7 +302,7 @@ class NetworkServiceTests: XCTestCase {
         waitForExpectations(timeout: 1.0)
 
         // 5. Assert URL
-        XCTAssertEqual(mockSession.lastURL?.absoluteString, "https://r2.mocker.surfstudio.ru/qq_trainee/user/profile")
+        XCTAssertEqual(mockSession.lastURL, expectedURL)
 
         // 6. Assert resume was called
         XCTAssertTrue(mockSession.nextDataTask.resumeWasCalled)
@@ -313,8 +319,9 @@ class NetworkServiceTests: XCTestCase {
         let expectation = self.expectation(description: "FetchUserProfile network error expectation")
         
         let expectedError = NSError(domain: "NSURLErrorDomain", code: NSURLErrorNotConnectedToInternet, userInfo: nil)
+        let expectedURL = APIEnvironment.EndpointPath.userProfile.getURL()!
         mockSession.nextError = expectedError
-        mockSession.nextResponse = HTTPURLResponse(url: URL(string: "https://r2.mocker.surfstudio.ru/qq_trainee/user/profile")!,
+        mockSession.nextResponse = HTTPURLResponse(url: expectedURL,
                                                  statusCode: 200, 
                                                  httpVersion: nil,
                                                  headerFields: nil)
@@ -334,7 +341,7 @@ class NetworkServiceTests: XCTestCase {
         
         waitForExpectations(timeout: 1.0)
         
-        XCTAssertEqual(mockSession.lastURL?.absoluteString, "https://r2.mocker.surfstudio.ru/qq_trainee/user/profile")
+        XCTAssertEqual(mockSession.lastURL, expectedURL)
         XCTAssertTrue(mockSession.nextDataTask.resumeWasCalled)
         XCTAssertNil(actualProfile)
         XCTAssertNotNil(actualError)
@@ -350,7 +357,8 @@ class NetworkServiceTests: XCTestCase {
         let expectation = self.expectation(description: "FetchUserProfile HTTP error expectation")
         
         let httpErrorStatusCode = 404
-        mockSession.nextResponse = HTTPURLResponse(url: URL(string: "https://r2.mocker.surfstudio.ru/qq_trainee/user/profile")!,
+        let expectedURL = APIEnvironment.EndpointPath.userProfile.getURL()!
+        mockSession.nextResponse = HTTPURLResponse(url: expectedURL,
                                                  statusCode: httpErrorStatusCode,
                                                  httpVersion: nil,
                                                  headerFields: nil)
@@ -370,7 +378,7 @@ class NetworkServiceTests: XCTestCase {
         
         waitForExpectations(timeout: 1.0)
         
-        XCTAssertEqual(mockSession.lastURL?.absoluteString, "https://r2.mocker.surfstudio.ru/qq_trainee/user/profile")
+        XCTAssertEqual(mockSession.lastURL, expectedURL)
         XCTAssertTrue(mockSession.nextDataTask.resumeWasCalled)
         XCTAssertNil(actualProfile)
         XCTAssertNotNil(actualError)
@@ -385,8 +393,9 @@ class NetworkServiceTests: XCTestCase {
     func testFetchUserProfile_Failure_NoData() {
         let expectation = self.expectation(description: "FetchUserProfile no data expectation")
 
+        let expectedURL = APIEnvironment.EndpointPath.userProfile.getURL()!
         mockSession.nextData = nil
-        mockSession.nextResponse = HTTPURLResponse(url: URL(string: "https://r2.mocker.surfstudio.ru/qq_trainee/user/profile")!,
+        mockSession.nextResponse = HTTPURLResponse(url: expectedURL,
                                                  statusCode: 200,
                                                  httpVersion: nil,
                                                  headerFields: nil)
@@ -406,7 +415,7 @@ class NetworkServiceTests: XCTestCase {
         
         waitForExpectations(timeout: 1.0)
         
-        XCTAssertEqual(mockSession.lastURL?.absoluteString, "https://r2.mocker.surfstudio.ru/qq_trainee/user/profile")
+        XCTAssertEqual(mockSession.lastURL, expectedURL)
         XCTAssertTrue(mockSession.nextDataTask.resumeWasCalled)
         XCTAssertNil(actualProfile)
         XCTAssertNotNil(actualError)
@@ -425,8 +434,9 @@ class NetworkServiceTests: XCTestCase {
         let malformedJsonString = "{\"id\": \"user123\", \"first_name\": \"Maria\"}" // Malformed: missing other required fields
         let mockJsonData = Data(malformedJsonString.utf8)
         
+        let expectedURL = APIEnvironment.EndpointPath.userProfile.getURL()!
         mockSession.nextData = mockJsonData
-        mockSession.nextResponse = HTTPURLResponse(url: URL(string: "https://r2.mocker.surfstudio.ru/qq_trainee/user/profile")!,
+        mockSession.nextResponse = HTTPURLResponse(url: expectedURL,
                                                  statusCode: 200,
                                                  httpVersion: nil,
                                                  headerFields: nil)
@@ -446,7 +456,7 @@ class NetworkServiceTests: XCTestCase {
         
         waitForExpectations(timeout: 1.0)
         
-        XCTAssertEqual(mockSession.lastURL?.absoluteString, "https://r2.mocker.surfstudio.ru/qq_trainee/user/profile")
+        XCTAssertEqual(mockSession.lastURL, expectedURL)
         XCTAssertTrue(mockSession.nextDataTask.resumeWasCalled)
         XCTAssertNil(actualProfile)
         XCTAssertNotNil(actualError)
@@ -471,8 +481,9 @@ class NetworkServiceTests: XCTestCase {
         let mockJsonData = try JSONEncoder().encode(mockResponse)
 
         // 2. Configure mock session
+        let expectedURL = APIEnvironment.EndpointPath.cities.getURL()!
         mockSession.nextData = mockJsonData
-        mockSession.nextResponse = HTTPURLResponse(url: URL(string: "https://r2.mocker.surfstudio.ru/qq_trainee/cities")!,
+        mockSession.nextResponse = HTTPURLResponse(url: expectedURL,
                                                  statusCode: 200,
                                                  httpVersion: nil,
                                                  headerFields: nil)
@@ -495,7 +506,7 @@ class NetworkServiceTests: XCTestCase {
         waitForExpectations(timeout: 1.0)
 
         // 5. Assert URL
-        XCTAssertEqual(mockSession.lastURL?.absoluteString, "https://r2.mocker.surfstudio.ru/qq_trainee/cities")
+        XCTAssertEqual(mockSession.lastURL, expectedURL)
 
         // 6. Assert resume was called
         XCTAssertTrue(mockSession.nextDataTask.resumeWasCalled)
@@ -512,8 +523,9 @@ class NetworkServiceTests: XCTestCase {
         let expectation = self.expectation(description: "FetchCities network error expectation")
         
         let expectedError = NSError(domain: "NSURLErrorDomain", code: NSURLErrorNotConnectedToInternet, userInfo: nil)
+        let expectedURL = APIEnvironment.EndpointPath.cities.getURL()!
         mockSession.nextError = expectedError
-        mockSession.nextResponse = HTTPURLResponse(url: URL(string: "https://r2.mocker.surfstudio.ru/qq_trainee/cities")!,
+        mockSession.nextResponse = HTTPURLResponse(url: expectedURL,
                                                  statusCode: 200, 
                                                  httpVersion: nil,
                                                  headerFields: nil)
@@ -533,7 +545,7 @@ class NetworkServiceTests: XCTestCase {
         
         waitForExpectations(timeout: 1.0)
         
-        XCTAssertEqual(mockSession.lastURL?.absoluteString, "https://r2.mocker.surfstudio.ru/qq_trainee/cities")
+        XCTAssertEqual(mockSession.lastURL, expectedURL)
         XCTAssertTrue(mockSession.nextDataTask.resumeWasCalled)
         XCTAssertNil(actualCities)
         XCTAssertNotNil(actualError)
@@ -549,7 +561,8 @@ class NetworkServiceTests: XCTestCase {
         let expectation = self.expectation(description: "FetchCities HTTP error expectation")
         
         let httpErrorStatusCode = 503
-        mockSession.nextResponse = HTTPURLResponse(url: URL(string: "https://r2.mocker.surfstudio.ru/qq_trainee/cities")!,
+        let expectedURL = APIEnvironment.EndpointPath.cities.getURL()!
+        mockSession.nextResponse = HTTPURLResponse(url: expectedURL,
                                                  statusCode: httpErrorStatusCode,
                                                  httpVersion: nil,
                                                  headerFields: nil)
@@ -569,7 +582,7 @@ class NetworkServiceTests: XCTestCase {
         
         waitForExpectations(timeout: 1.0)
         
-        XCTAssertEqual(mockSession.lastURL?.absoluteString, "https://r2.mocker.surfstudio.ru/qq_trainee/cities")
+        XCTAssertEqual(mockSession.lastURL, expectedURL)
         XCTAssertTrue(mockSession.nextDataTask.resumeWasCalled)
         XCTAssertNil(actualCities)
         XCTAssertNotNil(actualError)
@@ -584,8 +597,9 @@ class NetworkServiceTests: XCTestCase {
     func testFetchCities_Failure_NoData() {
         let expectation = self.expectation(description: "FetchCities no data expectation")
 
+        let expectedURL = APIEnvironment.EndpointPath.cities.getURL()!
         mockSession.nextData = nil
-        mockSession.nextResponse = HTTPURLResponse(url: URL(string: "https://r2.mocker.surfstudio.ru/qq_trainee/cities")!,
+        mockSession.nextResponse = HTTPURLResponse(url: expectedURL,
                                                  statusCode: 200,
                                                  httpVersion: nil,
                                                  headerFields: nil)
@@ -605,7 +619,7 @@ class NetworkServiceTests: XCTestCase {
         
         waitForExpectations(timeout: 1.0)
         
-        XCTAssertEqual(mockSession.lastURL?.absoluteString, "https://r2.mocker.surfstudio.ru/qq_trainee/cities")
+        XCTAssertEqual(mockSession.lastURL, expectedURL)
         XCTAssertTrue(mockSession.nextDataTask.resumeWasCalled)
         XCTAssertNil(actualCities)
         XCTAssertNotNil(actualError)
@@ -625,8 +639,9 @@ class NetworkServiceTests: XCTestCase {
         let mockJsonData = Data(malformedJsonString.utf8)
         
         // 2. Configure mock session
+        let expectedURL = APIEnvironment.EndpointPath.cities.getURL()!
         mockSession.nextData = mockJsonData
-        mockSession.nextResponse = HTTPURLResponse(url: URL(string: "https://r2.mocker.surfstudio.ru/qq_trainee/cities")!,
+        mockSession.nextResponse = HTTPURLResponse(url: expectedURL,
                                                  statusCode: 200,
                                                  httpVersion: nil,
                                                  headerFields: nil)
@@ -649,7 +664,7 @@ class NetworkServiceTests: XCTestCase {
         waitForExpectations(timeout: 1.0)
         
         // 5. Assert URL
-        XCTAssertEqual(mockSession.lastURL?.absoluteString, "https://r2.mocker.surfstudio.ru/qq_trainee/cities")
+        XCTAssertEqual(mockSession.lastURL, expectedURL)
         
         // 6. Assert resume was called
         XCTAssertTrue(mockSession.nextDataTask.resumeWasCalled)
@@ -818,8 +833,9 @@ class NetworkServiceTests: XCTestCase {
         let mockJsonData = try JSONEncoder().encode(mockMessage)
         
         // 2. Configure mock session
+        let expectedURL = APIEnvironment.EndpointPath.message.getURL()!
         mockSession.nextData = mockJsonData
-        mockSession.nextResponse = HTTPURLResponse(url: URL(string: "https://r2.mocker.surfstudio.ru/qa_trainee/message")!,
+        mockSession.nextResponse = HTTPURLResponse(url: expectedURL,
                                                  statusCode: 200,
                                                  httpVersion: nil,
                                                  headerFields: nil)
@@ -842,7 +858,7 @@ class NetworkServiceTests: XCTestCase {
         waitForExpectations(timeout: 1.0)
         
         // 5. Assert URL
-        XCTAssertEqual(mockSession.lastURL?.absoluteString, "https://r2.mocker.surfstudio.ru/qa_trainee/message")
+        XCTAssertEqual(mockSession.lastURL, expectedURL)
         
         // 6. Assert resume was called
         XCTAssertTrue(mockSession.nextDataTask.resumeWasCalled)
@@ -858,8 +874,9 @@ class NetworkServiceTests: XCTestCase {
         let expectation = self.expectation(description: "FetchBotMessageResponse network error")
         
         let expectedError = NSError(domain: "NSURLErrorDomain", code: NSURLErrorCannotConnectToHost, userInfo: nil)
+        let expectedURL = APIEnvironment.EndpointPath.message.getURL()!
         mockSession.nextError = expectedError
-        mockSession.nextResponse = HTTPURLResponse(url: URL(string: "https://r2.mocker.surfstudio.ru/qa_trainee/message")!, statusCode: 200, httpVersion: nil, headerFields: nil)
+        mockSession.nextResponse = HTTPURLResponse(url: expectedURL, statusCode: 200, httpVersion: nil, headerFields: nil)
 
         var actualMessage: ServerChatMessage?
         var actualError: Error?
@@ -872,7 +889,7 @@ class NetworkServiceTests: XCTestCase {
         
         waitForExpectations(timeout: 1.0)
         
-        XCTAssertEqual(mockSession.lastURL?.absoluteString, "https://r2.mocker.surfstudio.ru/qa_trainee/message")
+        XCTAssertEqual(mockSession.lastURL, expectedURL)
         XCTAssertTrue(mockSession.nextDataTask.resumeWasCalled)
         XCTAssertNil(actualMessage)
         XCTAssertNotNil(actualError)
@@ -888,7 +905,8 @@ class NetworkServiceTests: XCTestCase {
         let expectation = self.expectation(description: "FetchBotMessageResponse HTTP error")
         
         let httpErrorStatusCode = 401
-        mockSession.nextResponse = HTTPURLResponse(url: URL(string: "https://r2.mocker.surfstudio.ru/qa_trainee/message")!, statusCode: httpErrorStatusCode, httpVersion: nil, headerFields: nil)
+        let expectedURL = APIEnvironment.EndpointPath.message.getURL()!
+        mockSession.nextResponse = HTTPURLResponse(url: expectedURL, statusCode: httpErrorStatusCode, httpVersion: nil, headerFields: nil)
 
         var actualMessage: ServerChatMessage?
         var actualError: Error?
@@ -901,7 +919,7 @@ class NetworkServiceTests: XCTestCase {
         
         waitForExpectations(timeout: 1.0)
         
-        XCTAssertEqual(mockSession.lastURL?.absoluteString, "https://r2.mocker.surfstudio.ru/qa_trainee/message")
+        XCTAssertEqual(mockSession.lastURL, expectedURL)
         XCTAssertTrue(mockSession.nextDataTask.resumeWasCalled)
         XCTAssertNil(actualMessage)
         XCTAssertNotNil(actualError)
@@ -916,8 +934,9 @@ class NetworkServiceTests: XCTestCase {
     func testFetchBotMessageResponse_Failure_NoData() {
         let expectation = self.expectation(description: "FetchBotMessageResponse no data")
 
+        let expectedURL = APIEnvironment.EndpointPath.message.getURL()!
         mockSession.nextData = nil
-        mockSession.nextResponse = HTTPURLResponse(url: URL(string: "https://r2.mocker.surfstudio.ru/qa_trainee/message")!, statusCode: 200, httpVersion: nil, headerFields: nil)
+        mockSession.nextResponse = HTTPURLResponse(url: expectedURL, statusCode: 200, httpVersion: nil, headerFields: nil)
         
         var actualMessage: ServerChatMessage?
         var actualError: Error?
@@ -930,7 +949,7 @@ class NetworkServiceTests: XCTestCase {
         
         waitForExpectations(timeout: 1.0)
         
-        XCTAssertEqual(mockSession.lastURL?.absoluteString, "https://r2.mocker.surfstudio.ru/qa_trainee/message")
+        XCTAssertEqual(mockSession.lastURL, expectedURL)
         XCTAssertTrue(mockSession.nextDataTask.resumeWasCalled)
         XCTAssertNil(actualMessage)
         XCTAssertNotNil(actualError)
@@ -948,8 +967,9 @@ class NetworkServiceTests: XCTestCase {
         let malformedJsonString = "{\"text\": \"Hello there!\"}" // Malformed: missing 'user' field
         let mockJsonData = Data(malformedJsonString.utf8)
         
+        let expectedURL = APIEnvironment.EndpointPath.message.getURL()!
         mockSession.nextData = mockJsonData
-        mockSession.nextResponse = HTTPURLResponse(url: URL(string: "https://r2.mocker.surfstudio.ru/qa_trainee/message")!, statusCode: 200, httpVersion: nil, headerFields: nil)
+        mockSession.nextResponse = HTTPURLResponse(url: expectedURL, statusCode: 200, httpVersion: nil, headerFields: nil)
         
         var actualMessage: ServerChatMessage?
         var actualError: Error?
@@ -962,7 +982,7 @@ class NetworkServiceTests: XCTestCase {
         
         waitForExpectations(timeout: 1.0)
         
-        XCTAssertEqual(mockSession.lastURL?.absoluteString, "https://r2.mocker.surfstudio.ru/qa_trainee/message")
+        XCTAssertEqual(mockSession.lastURL, expectedURL)
         XCTAssertTrue(mockSession.nextDataTask.resumeWasCalled)
         XCTAssertNil(actualMessage)
         XCTAssertNotNil(actualError)
@@ -1002,4 +1022,33 @@ class MockURLSessionDataTask: URLSessionDataTaskProtocol {
     func resume() {
         resumeWasCalled = true
     }
+}
+
+// MARK: - APIEnvironmentTests
+class APIEnvironmentTests: XCTestCase {
+
+    func testAPIEnvironment_EventsURL() {
+        let expectedURLString = "https://r2.mocker.surfstudio.ru/qa_trainee/events"
+        XCTAssertEqual(APIEnvironment.EndpointPath.events.getURL()?.absoluteString, expectedURLString)
+    }
+
+    func testAPIEnvironment_UserProfileURL() {
+        let expectedURLString = "https://r2.mocker.surfstudio.ru/qa_trainee/user/profile"
+        XCTAssertEqual(APIEnvironment.EndpointPath.userProfile.getURL()?.absoluteString, expectedURLString)
+    }
+
+    func testAPIEnvironment_CitiesURL() {
+        let expectedURLString = "https://r2.mocker.surfstudio.ru/qa_trainee/cities"
+        XCTAssertEqual(APIEnvironment.EndpointPath.cities.getURL()?.absoluteString, expectedURLString)
+    }
+
+    func testAPIEnvironment_MessageURL() {
+        let expectedURLString = "https://r2.mocker.surfstudio.ru/qa_trainee/message"
+        XCTAssertEqual(APIEnvironment.EndpointPath.message.getURL()?.absoluteString, expectedURLString)
+    }
+    
+    func testAPIEnvironment_BaseURLConstant() {
+        XCTAssertEqual(APIEnvironment.baseURLString, "https://r2.mocker.surfstudio.ru/qa_trainee")
+    }
+
 } 

@@ -87,9 +87,10 @@ class NetworkService {
 
     // MARK: - Event Endpoints
     func fetchEvents(completion: @escaping (Result<[Event], NetworkError>) -> Void) {
-        let url = URL(string: "https://r2.mocker.surfstudio.ru/qa_trainee/events")
+        let endpointPath = APIEnvironment.EndpointPath.events
+        let url = endpointPath.getURL()
         
-        performRequest(url: url, urlDescription: "events list") { (result: Result<ServerEventsResponse, NetworkError>) in
+        performRequest(url: url, urlDescription: endpointPath.rawValue) { (result: Result<ServerEventsResponse, NetworkError>) in
             switch result {
             case .success(let serverResponse):
                 // Map ServerEvent to Event
@@ -187,15 +188,17 @@ class NetworkService {
 
     // MARK: - User Profile Endpoint
     func fetchUserProfile(completion: @escaping (Result<UserProfile, NetworkError>) -> Void) {
-        let url = URL(string: "https://r2.mocker.surfstudio.ru/qa_trainee/user/profile")
-        performRequest(url: url, urlDescription: "user profile", completion: completion)
+        let endpointPath = APIEnvironment.EndpointPath.userProfile
+        let url = endpointPath.getURL()
+        performRequest(url: url, urlDescription: endpointPath.rawValue, completion: completion)
     }
 
     // MARK: - Cities Endpoint
     func fetchCities(completion: @escaping (Result<[City], NetworkError>) -> Void) {
-        let url = URL(string: "https://r2.mocker.surfstudio.ru/qa_trainee/cities")
+        let endpointPath = APIEnvironment.EndpointPath.cities
+        let url = endpointPath.getURL()
         
-        performRequest(url: url, urlDescription: "cities list") { (result: Result<CitiesResponse, NetworkError>) in
+        performRequest(url: url, urlDescription: endpointPath.rawValue) { (result: Result<CitiesResponse, NetworkError>) in
             switch result {
             case .success(let citiesResponse):
                 print("[NetworkService] Список городов успешно загружен и декодирован с URL.")
@@ -208,8 +211,9 @@ class NetworkService {
 
     // MARK: - Chat Bot Message Endpoint
     func fetchBotMessageResponse(completion: @escaping (Result<ServerChatMessage, NetworkError>) -> Void) {
-        let url = URL(string: "https://r2.mocker.surfstudio.ru/qa_trainee/message")
-        performRequest(url: url, urlDescription: "bot message response", completion: completion)
+        let endpointPath = APIEnvironment.EndpointPath.message
+        let url = endpointPath.getURL()
+        performRequest(url: url, urlDescription: endpointPath.rawValue, completion: completion)
     }
 }
 
