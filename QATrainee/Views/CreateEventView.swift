@@ -16,28 +16,31 @@ struct CreateEventView: View {
     @State private var alertMessage = ""
     
     @State private var isSubmitting = false
-    private let accentColor = Color(red: 0.353, green: 0.404, blue: 0.847) // #5A67D8
 
     var body: some View {
         NavigationView {
             Form {
-                Section(header: Text("Детали события").font(.system(size: 16, weight: .medium))) { // Was "Event Details" // Font updated
+                Section(header: Text("Детали события").font(AppFonts.formSectionHeader).foregroundColor(AppColors.textPrimary)) {
                     TextField("Название события", text: $eventName) // Was "Event Name"
-                        .font(.system(size: 16))
+                        .font(AppFonts.bodyRegular)
+                        .foregroundColor(AppColors.textPrimary)
                         .accessibilityIdentifier(AccessibilityID.createEventNameField)
                     DatePicker("Дата", selection: $eventDate, displayedComponents: .date) // Was "Date"
-                        .font(.system(size: 16))
+                        .font(AppFonts.bodyRegular)
+                        .foregroundColor(AppColors.textPrimary)
                         .accessibilityIdentifier(AccessibilityID.createEventDateField)
                     TextField("Город", text: $eventCity) // Was "City"
-                        .font(.system(size: 16))
+                        .font(AppFonts.bodyRegular)
+                        .foregroundColor(AppColors.textPrimary)
                         .accessibilityIdentifier(AccessibilityID.createEventCityField)
                     
                     Picker("Категория", selection: $eventCategory) { // Was "Category"
                         ForEach(categories, id: \.self) {
-                            Text($0).font(.system(size: 16)) // Font updated
+                            Text($0).font(AppFonts.bodyRegular)
                         }
                     }
-                    .font(.system(size: 16)) // Font for Picker label
+                    .font(AppFonts.bodyRegular) // Font for Picker label
+                    .foregroundColor(AppColors.textPrimary)
                     .accessibilityIdentifier(AccessibilityID.createEventCategoryPicker)
                     .onAppear {
                         if eventCategory.isEmpty {
@@ -47,14 +50,16 @@ struct CreateEventView: View {
 
                     TextField("Организатор (Ваше имя)", text: $organizerName) // Was "Organizer (Your Name)"
                         .disabled(true)
-                        .font(.system(size: 16))
+                        .font(AppFonts.bodyRegular)
+                        .foregroundColor(AppColors.textSecondary) // Disabled text color
                         .accessibilityIdentifier(AccessibilityID.createEventOrganizerField)
                 }
 
-                Section(header: Text("Описание").font(.system(size: 16, weight: .medium))) { // Was "Description" // Font updated
+                Section(header: Text("Описание").font(AppFonts.formSectionHeader).foregroundColor(AppColors.textPrimary)) { // Was "Description" // Font updated
                     TextField("Расскажите больше о событии...", text: $eventDescription, axis: .vertical) // Was "Tell us more about the event..."
                         .frame(minHeight: 100, alignment: .topLeading) 
-                        .font(.system(size: 16))
+                        .font(AppFonts.bodyRegular)
+                        .foregroundColor(AppColors.textPrimary)
                         .accessibilityIdentifier(AccessibilityID.createEventDescriptionField)
                 }
                 
@@ -63,21 +68,21 @@ struct CreateEventView: View {
                         Spacer()
                         if isSubmitting {
                             Text("Отправка...") // Was "Submitting..."
-                                .font(.system(size: 18, weight: .semibold))
+                                .font(AppFonts.button)
                             ProgressView()
                                 .padding(.leading, 8)
                                 .tint(.white) // Ensure progress view is visible
                         } else {
                             Text("Создать событие") // Was "Create Event"
-                                .font(.system(size: 18, weight: .semibold))
+                                .font(AppFonts.button)
                         }
                         Spacer()
                     }
                     .padding()
-                    .background(isSubmitting ? Color.gray.opacity(0.7) : accentColor)
-                    .foregroundColor(.white)
+                    .background(isSubmitting ? AppColors.textSecondary.opacity(0.5) : AppColors.accent)
+                    .foregroundColor(AppColors.textWhite)
                     .cornerRadius(10)
-                    .shadow(color: accentColor.opacity(isSubmitting ? 0 : 0.3), radius: 5, x: 0, y: 3) // Conditional shadow
+                    .shadow(color: AppColors.accent.opacity(isSubmitting ? 0 : 0.3), radius: 5, x: 0, y: 3) // Conditional shadow
                 }
                 .disabled(isSubmitting) 
                 .listRowInsets(EdgeInsets()) // Make button full width in form
@@ -85,6 +90,7 @@ struct CreateEventView: View {
             }
             .navigationTitle("Новое событие") // Was "New Event"
             .font(.system(size: 16)) // Default font for Form content not explicitly set
+            // This default font will be overridden by specific AppFonts settings on elements.
             .alert(isPresented: $showingAlert) {
                 Alert(title: Text(alertTitle), message: Text(alertMessage), dismissButton: .default(Text("OK")))
             }

@@ -14,8 +14,6 @@ struct EventFilterView: View {
     @State private var cityErrorMessage: String?
     // Default city option representing "All"
     private let allCitiesOption = City(id: "Все", name: "Все города", position: CityPosition(lat: "", long: ""))
-    private let accentColor = Color(red: 0.353, green: 0.404, blue: 0.847) // #5A67D8
-
 
     @State private var localStartDate: Date
     @State private var localEndDate: Date
@@ -34,46 +32,52 @@ struct EventFilterView: View {
     var body: some View {
         NavigationView {
             Form {
-                Section(header: Text("Фильтр по категории").font(.system(size: 16, weight: .medium))) {
+                Section(header: Text("Фильтр по категории").font(AppFonts.formSectionHeader).foregroundColor(AppColors.textPrimary)) {
                     Picker("Категория", selection: $selectedCategory) {
                         ForEach(categories, id: \.self) { category in
-                            Text(category).font(.system(size: 16))
+                            Text(category).font(AppFonts.bodyRegular)
                         }
                     }
-                    .font(.system(size: 16)) // For Picker label
+                    .font(AppFonts.bodyRegular) // For Picker label
+                    .foregroundColor(AppColors.textPrimary)
                     .pickerStyle(.menu)
                     .accessibilityIdentifier(AccessibilityID.filterCategoryPicker)
                 }
 
-                Section(header: Text("Фильтр по дате").font(.system(size: 16, weight: .medium))) {
+                Section(header: Text("Фильтр по дате").font(AppFonts.formSectionHeader).foregroundColor(AppColors.textPrimary)) {
                     DatePicker("Дата начала", selection: $localStartDate, displayedComponents: .date)
-                        .font(.system(size: 16))
+                        .font(AppFonts.bodyRegular)
+                        .foregroundColor(AppColors.textPrimary)
                         .accessibilityIdentifier(AccessibilityID.filterStartDatePicker)
                     DatePicker("Дата окончания", selection: $localEndDate, displayedComponents: .date)
-                        .font(.system(size: 16))
+                        .font(AppFonts.bodyRegular)
+                        .foregroundColor(AppColors.textPrimary)
                         .accessibilityIdentifier(AccessibilityID.filterEndDatePicker)
                 }
 
-                Section(header: Text("Фильтр по городу").font(.system(size: 16, weight: .medium))) {
+                Section(header: Text("Фильтр по городу").font(AppFonts.formSectionHeader).foregroundColor(AppColors.textPrimary)) {
                     if isLoadingCities {
                         HStack {
-                            Text("Загрузка городов...").font(.system(size: 16))
-                            ProgressView().tint(accentColor)
+                            Text("Загрузка городов...")
+                                .font(AppFonts.bodyRegular)
+                                .foregroundColor(AppColors.textSecondary)
+                            ProgressView().tint(AppColors.accent)
                         }
                     } else if let cityErrorMessage = cityErrorMessage {
                         Text("Ошибка: \(cityErrorMessage)")
-                            .foregroundColor(.red)
-                            .font(.system(size: 16))
+                            .font(AppFonts.bodyRegular)
+                            .foregroundColor(AppColors.destructive)
                     } else {
                         Picker("Город", selection: $selectedCity) {
                             // Add "All" option manually at the beginning
-                            Text(allCitiesOption.name).tag(allCitiesOption.id).font(.system(size: 16))
+                            Text(allCitiesOption.name).tag(allCitiesOption.id).font(AppFonts.bodyRegular)
                             
                             ForEach(availableCities) { city in
-                                Text(city.name).tag(city.id).font(.system(size: 16))
+                                Text(city.name).tag(city.id).font(AppFonts.bodyRegular)
                             }
                         }
-                        .font(.system(size: 16)) // For Picker label
+                        .font(AppFonts.bodyRegular) // For Picker label
+                        .foregroundColor(AppColors.textPrimary)
                         .pickerStyle(.menu)
                         .accessibilityIdentifier(AccessibilityID.filterCityPicker)
                     }
@@ -88,13 +92,13 @@ struct EventFilterView: View {
                     print("Фильтры применены: Категория - \(selectedCategory), Город ID - \(selectedCity), Начало - \(startDate), Конец - \(endDate)")
                     dismiss()
                 }
-                .font(.system(size: 18, weight: .semibold))
+                .font(AppFonts.button)
                 .padding()
                 .frame(maxWidth: .infinity)
-                .background(accentColor)
-                .foregroundColor(.white)
+                .background(AppColors.accent)
+                .foregroundColor(AppColors.textWhite)
                 .cornerRadius(10)
-                .shadow(color: accentColor.opacity(0.3), radius: 5, x: 0, y: 3)
+                .shadow(color: AppColors.accent.opacity(0.3), radius: 5, x: 0, y: 3)
                 .listRowInsets(EdgeInsets()) // Make button full width
                 .accessibilityIdentifier(AccessibilityID.filterApplyButton)
 
@@ -108,11 +112,11 @@ struct EventFilterView: View {
                     print("Фильтры сброшены.")
                     dismiss()
                 }
-                .font(.system(size: 18, weight: .semibold))
+                .font(AppFonts.button)
                 .padding() 
                 .frame(maxWidth: .infinity)
-                .foregroundColor(Color.red) // Keeping red for clear destructive action
-                .background(Color.red.opacity(0.1)) // Subtle background for reset button
+                .foregroundColor(AppColors.destructive) 
+                .background(AppColors.destructive.opacity(0.1)) 
                 .cornerRadius(10)
                 .listRowInsets(EdgeInsets()) // Make button full width
                 .accessibilityIdentifier(AccessibilityID.filterResetButton)
@@ -127,8 +131,8 @@ struct EventFilterView: View {
                 // selectedCity is already bound
                 dismiss()
             }
-            .font(.system(size: 16, weight: .medium)) // Font for Done button
-            .tint(accentColor) // Accent color for Done button
+            .font(AppFonts.bodyMedium) // Font for Done button
+            .tint(AppColors.accent) // Accent color for Done button
             .accessibilityIdentifier(AccessibilityID.filterDoneButton))
             .onAppear {
                 fetchCityData()

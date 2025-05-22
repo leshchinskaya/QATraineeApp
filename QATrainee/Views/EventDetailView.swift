@@ -9,9 +9,6 @@ struct EventDetailView: View {
     
     @State private var isRegistering = false 
 
-    // Bug: Date formatting susceptible to locale issues.
-    private let accentColor = Color(red: 0.353, green: 0.404, blue: 0.847) // #5A67D8
-
     private var dateFormatterWithLocaleBug: DateFormatter {
         let formatter = DateFormatter()
         formatter.dateFormat = "EEEE, MMM d, yyyy 'в' H:mm a zzz"
@@ -27,53 +24,59 @@ struct EventDetailView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 18) {
                 Text(event.name)
-                    .font(.system(size: 28, weight: .bold))
+                    .font(AppFonts.largeTitleBold)
+                    .foregroundColor(AppColors.textPrimary)
                     .accessibilityIdentifier(AccessibilityID.eventDetailTitle(eventName: event.name))
 
                 Text("Организатор: \(event.organizer)")
-                    .font(.system(size: 18, weight: .medium))
-                    .foregroundColor(accentColor)
+                    .font(AppFonts.bodyMedium)
+                    .foregroundColor(AppColors.accent)
                     .accessibilityIdentifier(AccessibilityID.eventDetailOrganizer(organizerName: event.organizer))
 
                 HStack(spacing: 8) {
                     Image(systemName: "calendar")
-                        .foregroundColor(accentColor)
+                        .foregroundColor(AppColors.accent)
                     Text("\(event.date, formatter: dateFormatterWithLocaleBug)")
-                        .font(.system(size: 16))
+                        .font(AppFonts.bodyRegular)
+                        .foregroundColor(AppColors.textPrimary)
                 }
                 .accessibilityElement(children: .combine)
                 .accessibilityIdentifier(AccessibilityID.eventDetailDate)
 
                 HStack(spacing: 8) {
                     Image(systemName: "mappin.and.ellipse")
-                        .foregroundColor(accentColor)
+                        .foregroundColor(AppColors.accent)
                     Text(event.city)
-                        .font(.system(size: 16))
+                        .font(AppFonts.bodyRegular)
+                        .foregroundColor(AppColors.textPrimary)
                 }
                 .accessibilityElement(children: .combine)
                 .accessibilityIdentifier(AccessibilityID.eventDetailCity(cityName: event.city))
 
                 HStack(spacing: 8) {
                     Image(systemName: "tag.fill")
-                        .foregroundColor(accentColor)
+                        .foregroundColor(AppColors.accent)
                     Text(event.category)
-                        .font(.system(size: 16))
+                        .font(AppFonts.bodyRegular)
+                        .foregroundColor(AppColors.textPrimary)
                 }
                 .accessibilityElement(children: .combine)
                 .accessibilityIdentifier(AccessibilityID.eventDetailCategory(categoryName: event.category))
 
                 Text("Об этом событии:")
-                    .font(.system(size: 22, weight: .bold))
+                    .font(AppFonts.largeTitleBold)
+                    .foregroundColor(AppColors.textPrimary)
                     .padding(.top)
                 
                 Text(event.description)
-                    .font(.system(size: 16))
-                    .foregroundColor(Color(UIColor.label))
+                    .font(AppFonts.bodyRegular)
+                    .foregroundColor(AppColors.textPrimary)
                     .padding(.bottom)
                     .accessibilityIdentifier(AccessibilityID.eventDetailDescription)
                 
                 Text("Участники: \(event.attendees.count)")
-                    .font(.system(size: 16, weight: .medium))
+                    .font(AppFonts.bodyMedium)
+                    .foregroundColor(AppColors.textPrimary)
                     .accessibilityIdentifier(AccessibilityID.eventDetailAttendeesCount)
 
                 Spacer()
@@ -85,18 +88,18 @@ struct EventDetailView: View {
                                 .tint(.white)
                                 .padding(.trailing, 5)
                             Text(event.isRegistered ? "Отменяем регистрацию..." : "Регистрация...")
-                                .font(.system(size: 18, weight: .semibold))
+                                .font(AppFonts.button)
                         } else {
                             Text(event.isRegistered ? "Вы зарегистрированы" : "Зарегистрироваться")
-                                .font(.system(size: 18, weight: .semibold))
+                                .font(AppFonts.button)
                         }
                     }
-                    .foregroundColor(.white)
+                    .foregroundColor(AppColors.textWhite)
                     .padding()
                     .frame(maxWidth: .infinity)
-                    .background(isRegistering ? Color.gray.opacity(0.7) : (event.isRegistered ? Color.green.opacity(0.8) : accentColor))
+                    .background(isRegistering ? AppColors.textSecondary.opacity(0.5) : (event.isRegistered ? AppColors.positive.opacity(0.8) : AppColors.accent))
                     .cornerRadius(10)
-                    .shadow(color: accentColor.opacity(event.isRegistered || isRegistering ? 0 : 0.3), radius: 5, x: 0, y: 3)
+                    .shadow(color: AppColors.accent.opacity(event.isRegistered || isRegistering ? 0 : 0.3), radius: 5, x: 0, y: 3)
                 }
                 .accessibilityIdentifier(AccessibilityID.registerButton(eventName: event.name))
                 .disabled(isRegistering || (event.isRegistered && isEventOver)) 
@@ -113,7 +116,7 @@ struct EventDetailView: View {
             ToolbarItem(placement: .navigationBarTrailing) {
                 NavigationLink(destination: ChatView(eventName: event.name)) {
                     Image(systemName: "message.fill")
-                        .foregroundColor(accentColor)
+                        .foregroundColor(AppColors.accent)
                 }
                 .accessibilityIdentifier(AccessibilityID.chatButton(eventName: event.name))
             }
@@ -152,7 +155,6 @@ struct EventDetailView_Previews: PreviewProvider {
     static var previews: some View {
         // Для предварительного просмотра создадим несколько событий на русском
         // Это не повлияет на основную логику sampleEvents, но сделает превью более релевантным
-        let accent = Color(red: 0.353, green: 0.404, blue: 0.847)
         let sampleRussianEventPast = Event(id: UUID(), name: "Прошедший Рок Концерт", date: Calendar.current.date(byAdding: .day, value: -5, to: Date())!, city: "Москва", category: "Музыка", description: "Легендарный рок концерт, который уже прошел.", organizer: "Рок Продакшн")
         let sampleRussianEventFuture = Event(id: UUID(), name: "Тех Конференция 2025", date: Calendar.current.date(byAdding: .month, value: 3, to: Date())!, city: "Санкт-Петербург", category: "Конференция", description: "Главная тех конференция года.", isRegistered: false, organizer: "Тех Гуру")
         let sampleRussianEventRegistered = Event(id: UUID(), name: "Местный Благотворительный Забег", date: Calendar.current.date(byAdding: .weekOfYear, value: 2, to: Date())!, city: "Казань", category: "Спорт", description: "Пробегитесь ради доброго дела!", isRegistered: true, organizer: "Клуб Бегунов Казани", attendees: ["CurrentUser"])

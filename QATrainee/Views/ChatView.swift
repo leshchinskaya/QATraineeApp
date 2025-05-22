@@ -4,8 +4,6 @@ import SharedAccessibilityIDs
 struct ChatView: View {
     var eventName: String?
     
-    private let accentColor = Color(red: 0.353, green: 0.404, blue: 0.847) // #5A67D8
-    
     @State private var messages: [ChatMessage] = [
         ChatMessage(user: "Алиса", text: "Всем привет! Ждете это событие?"),
         ChatMessage(user: "Борис", text: "Конечно! Кто-нибудь знает, легко ли там с парковкой?"),
@@ -28,7 +26,7 @@ struct ChatView: View {
                     ScrollView {
                         LazyVStack(alignment: .leading, spacing: 12) { // Increased spacing
                             ForEach(messages) { message in
-                                ChatMessageView(message: message, accentColor: accentColor)
+                                ChatMessageView(message: message)
                                     .id(message.id)
                                     .accessibilityIdentifier(AccessibilityID.chatMessage(id: message.id))
                             }
@@ -51,9 +49,10 @@ struct ChatView: View {
                 HStack(spacing: 12) { // Added spacing
                     TextField("Введите сообщение...", text: $newMessageText)
                         .accessibilityIdentifier(AccessibilityID.chatMessageTextField)
+                        .font(AppFonts.bodyRegular)
                         .textFieldStyle(.plain) // Use plain style for more custom look
                         .padding(10) // Add padding inside textfield
-                        .background(Color(UIColor.systemGray6).cornerRadius(10)) // Background for textfield
+                        .background(AppColors.fillGray6.cornerRadius(10)) // Background for textfield
                         // Bug: No character limit, potential for very long messages
                         .padding(.leading)
                     
@@ -61,16 +60,16 @@ struct ChatView: View {
                         Image(systemName: "arrow.up.circle.fill")
                             .resizable()
                             .frame(width: 32, height: 32) // Increased size
-                            .foregroundColor(newMessageText.isEmpty ? .gray : accentColor) // Use accent color, gray when disabled
+                            .foregroundColor(newMessageText.isEmpty ? AppColors.textSecondary : AppColors.accent)
                     }
                     .accessibilityIdentifier(AccessibilityID.chatSendMessageButton)
                     .padding(.trailing)
                     // Bug: Button has no padding around the image itself, icon is flush with button edges
                     .disabled(newMessageText.isEmpty) // Basic validation
                 }
-                .padding(.horizontal, 8) // Reduced horizontal padding for the HStack
+                .padding(.horizontal, 8)
                 .padding(.vertical, 10) // Increased vertical padding for input area
-                .background(Color(UIColor.systemBackground)) // Background for input area to match overall theme
+                .background(AppColors.background) // Background for input area
             }
             .background(Color(UIColor.systemBackground).edgesIgnoringSafeArea(.bottom)) // Ensure background covers under input area
             .navigationTitle(eventName != nil ? "Чат: \(eventName!)" : "Чат события")
@@ -124,14 +123,13 @@ struct ChatMessage: Identifiable, Hashable {
 
 struct ChatMessageView: View {
     let message: ChatMessage
-    let accentColor: Color // Passed from ChatView
     
     var body: some View {
         HStack(alignment: .bottom, spacing: 8) { // Align to bottom, add spacing for avatar
             if !message.isCurrentUser {
                 Image(systemName: message.avatarName) // Placeholder avatar
                     .font(.system(size: 28))
-                    .foregroundColor(.gray)
+                    .foregroundColor(AppColors.textSecondary)
                     .clipShape(Circle())
                 Spacer().frame(width: 0) // Ensure avatar is to the left of the bubble
             }
@@ -142,13 +140,13 @@ struct ChatMessageView: View {
             
             VStack(alignment: message.isCurrentUser ? .trailing : .leading, spacing: 4) {
                 Text(message.user)
-                    .font(.system(size: 14, weight: .semibold)) // Updated font
-                    .foregroundColor(.gray)
+                    .font(AppFonts.captionBold)
+                    .foregroundColor(AppColors.textSecondary)
                 Text(message.text)
-                    .font(.system(size: 16)) // Updated font
+                    .font(AppFonts.bodyRegular)
                     .padding(12) // Increased padding
-                    .background(message.isCurrentUser ? accentColor : Color(UIColor.systemGray5)) // Updated colors
-                    .foregroundColor(message.isCurrentUser ? .white : Color(UIColor.label)) // Adaptive text color
+                    .background(message.isCurrentUser ? AppColors.accent : AppColors.fillGray5)
+                    .foregroundColor(message.isCurrentUser ? AppColors.textWhite : AppColors.textPrimary)
                     .cornerRadius(16) // Increased corner radius for softer bubbles
                     // Bug: Text color on systemGray4 might have low contrast in dark mode / light mode for some users (Now systemGray5 and adaptive text)
             }
@@ -157,7 +155,7 @@ struct ChatMessageView: View {
                  Spacer().frame(width: 0)
                  Image(systemName: message.avatarName) // Placeholder avatar
                     .font(.system(size: 28))
-                    .foregroundColor(accentColor)
+                    .foregroundColor(AppColors.accent)
                     .clipShape(Circle())
             }
             

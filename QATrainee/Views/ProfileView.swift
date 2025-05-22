@@ -12,29 +12,41 @@ struct ProfileView: View {
         NavigationView {
             VStack {
                 if isLoading {
-                    ProgressView("Загрузка профиля...")
+                    ProgressView {
+                        Text("Загрузка профиля...")
+                            .font(AppFonts.bodyRegular)
+                            .foregroundColor(AppColors.textSecondary)
+                    }
+                        .tint(AppColors.accent)
                         .accessibilityIdentifier(AccessibilityID.profileLoadingIndicator)
                         .padding()
                 } else if let errorMessage = errorMessage {
                     Text("Ошибка: \(errorMessage)")
+                        .font(AppFonts.bodyRegular)
+                        .foregroundColor(AppColors.destructive)
                         .accessibilityIdentifier(AccessibilityID.profileErrorMessageText)
-                        .foregroundColor(.red)
                         .padding()
                         .multilineTextAlignment(.center)
                 } else if let profile = userProfile {
                     Form {
-                        Section(header: Text("Основная информация")) {
+                        Section(header: Text("Основная информация")
+                                    .font(AppFonts.formSectionHeader)
+                                    .foregroundColor(AppColors.textPrimary)) {
                             ProfileRow(label: "ID", value: profile.id, identifierLabel: "ID")
                             ProfileRow(label: "Имя", value: profile.firstName ?? "Не указано")
                             ProfileRow(label: "Фамилия", value: profile.lastName ?? "Не указано")
                         }
                         
-                        Section(header: Text("Контактная информация")) {
+                        Section(header: Text("Контактная информация")
+                                    .font(AppFonts.formSectionHeader)
+                                    .foregroundColor(AppColors.textPrimary)) {
                             ProfileRow(label: "Email", value: profile.email ?? "Не указан")
                             ProfileRow(label: "Телефон", value: profile.phone ?? "Не указан")
                         }
                         
-                        Section(header: Text("Дополнительная информация")) {
+                        Section(header: Text("Дополнительная информация")
+                                    .font(AppFonts.formSectionHeader)
+                                    .foregroundColor(AppColors.textPrimary)) {
                             ProfileRow(label: "Дата рождения", value: profile.displayBirthday)
                             ProfileRow(label: "Пол", value: profile.displaySex)
                         }
@@ -42,6 +54,8 @@ struct ProfileView: View {
                     .accessibilityIdentifier(AccessibilityID.profileForm)
                 } else {
                     Text("Профиль не загружен.")
+                        .font(AppFonts.bodyRegular)
+                        .foregroundColor(AppColors.textSecondary)
                         .padding()
                         .accessibilityIdentifier(AccessibilityID.profileNotLoadedText)
                 }
@@ -54,6 +68,7 @@ struct ProfileView: View {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: fetchUserProfileData) {
                         Image(systemName: "arrow.clockwise")
+                            .foregroundColor(AppColors.accent)
                     }
                     .disabled(isLoading)
                     .accessibilityIdentifier(AccessibilityID.refreshProfileButton)
@@ -88,9 +103,12 @@ struct ProfileRow: View {
     var body: some View {
         HStack {
             Text(label)
-                .foregroundColor(.gray)
+                .font(AppFonts.bodyRegular)
+                .foregroundColor(AppColors.textSecondary)
             Spacer()
             Text(value)
+                .font(AppFonts.bodyRegular)
+                .foregroundColor(AppColors.textPrimary)
                 .multilineTextAlignment(.trailing)
         }
         .accessibilityElement(children: .combine)

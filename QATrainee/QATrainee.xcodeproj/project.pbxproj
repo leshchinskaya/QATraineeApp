@@ -1,0 +1,30 @@
+5B922C6E2DD50811008BD183 /* QATraineeUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = QATraineeUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+5B9AFB7F2DD877A2007721C8 /* SharedAccessibilityIDs.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SharedAccessibilityIDs.h; sourceTree = "<group>"; };
+5C0000032DD0000100000000 /* SharedAccessibilityIDs.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SharedAccessibilityIDs.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+5F0000012E0B000000000000 /* AppColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppColors.swift; path = QATrainee/Theme/AppColors.swift; sourceTree = "<group>"; };
+5F0000022E0B000000000000 /* Color+Hex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "Color+Hex.swift"; path = "QATrainee/Theme/Color+Hex.swift"; sourceTree = "<group>"; };
+5F0000032E0B000000000000 /* NewEventRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = NewEventRowView.swift; path = QATrainee/Views/Components/NewEventRowView.swift; sourceTree = "<group>"; };
+5F0000042E0B000000000000 /* NewHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = NewHeaderView.swift; path = QATrainee/Views/Components/NewHeaderView.swift; sourceTree = "<group>"; };
+5F0000052E0B000000000000 /* NewContentTabsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = NewContentTabsView.swift; path = QATrainee/Views/Components/NewContentTabsView.swift; sourceTree = "<group>"; };
+5F0000062E0B000000000000 /* Components */ = {isa = PBXGroup; children = (5F0000032E0B000000000000 /* NewEventRowView.swift */, 5F0000042E0B000000000000 /* NewHeaderView.swift */, 5F0000052E0B000000000000 /* NewContentTabsView.swift */, ); name = Components; path = QATrainee/Views/Components; sourceTree = "<group>"; };
+5F0000072E0B000000000000 /* Theme */ = {isa = PBXGroup; children = (5F0000012E0B000000000000 /* AppColors.swift */, 5F0000022E0B000000000000 /* Color+Hex.swift */, ); name = Theme; path = QATrainee/Theme; sourceTree = "<group>"; };
+5F0000092E0B000000000000 /* AppFonts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppFonts.swift; path = QATrainee/Theme/AppFonts.swift; sourceTree = "<group>"; };
+
+5B922C672DD50811008BD183 /* QATraineeTests */,
+5B922C712DD50811008BD183 /* QATraineeUITests */,
+5B922C582DD50810008BD183 /* Products */,
+5F0000072E0B000000000000 /* Theme */,
+5F0000062E0B000000000000 /* Components */,
+5C0000102DD0000100000000 /* SharedAccessibilityIDs */,
+);
+sourceTree = "<group>";
+
+5F0000012E0B000000000000 /* AppColors.swift in Sources */,
+5F0000022E0B000000000000 /* Color+Hex.swift in Sources */,
+5F0000032E0B000000000000 /* NewEventRowView.swift in Sources */,
+5F0000042E0B000000000000 /* NewHeaderView.swift in Sources */,
+5F0000052E0B000000000000 /* NewContentTabsView.swift in Sources */,
+5F0000082E0B000000000000 /* AppFonts.swift in Sources */,
+);
+runOnlyForDeploymentPostprocessing = 0;
+}; 

@@ -7,9 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5B8F80D62DDF81FE00F6C765 /* SharedAccessibilityIDs.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C0000032DD0000100000000 /* SharedAccessibilityIDs.framework */; };
+		5B8F80D72DDF81FE00F6C765 /* SharedAccessibilityIDs.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 5C0000032DD0000100000000 /* SharedAccessibilityIDs.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		5B9AFB802DD877A2007721C8 /* SharedAccessibilityIDs.h in Headers */ = {isa = PBXBuildFile; fileRef = 5B9AFB7F2DD877A2007721C8 /* SharedAccessibilityIDs.h */; };
 		5C0000052DD0000100000000 /* SharedAccessibilityIDs/AccessibilityIdentifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B0000012DD0000000000000 /* SharedAccessibilityIDs/AccessibilityIdentifiers.swift */; };
-		5C00000B2DD0000100000000 /* SharedAccessibilityIDs.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C0000032DD0000100000000 /* SharedAccessibilityIDs.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		5C00000C2DD0000100000000 /* SharedAccessibilityIDs.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C0000032DD0000100000000 /* SharedAccessibilityIDs.framework */; };
 /* End PBXBuildFile section */
 
@@ -44,8 +45,25 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		5B8F80D82DDF81FE00F6C765 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				5B8F80D72DDF81FE00F6C765 /* SharedAccessibilityIDs.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		5B0000012DD0000000000000 /* SharedAccessibilityIDs/AccessibilityIdentifiers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedAccessibilityIDs/AccessibilityIdentifiers.swift; sourceTree = SOURCE_ROOT; };
+		5B656DB02DDF71FB00679778 /* QATrainee.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = QATrainee.xcodeproj; sourceTree = "<group>"; };
+		5B8F80522DDF79D300F6C765 /* QATrainee.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = QATrainee.xcodeproj; sourceTree = "<group>"; };
+		5B8F80A42DDF7FC300F6C765 /* QATrainee.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = QATrainee.xcodeproj; sourceTree = "<group>"; };
 		5B922C572DD50810008BD183 /* QATrainee.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = QATrainee.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5B922C642DD50811008BD183 /* QATraineeTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = QATraineeTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		5B922C6E2DD50811008BD183 /* QATraineeUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = QATraineeUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -76,7 +94,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5C00000B2DD0000100000000 /* SharedAccessibilityIDs.framework in Frameworks */,
+				5B8F80D62DDF81FE00F6C765 /* SharedAccessibilityIDs.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -105,6 +123,21 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		5B656DB12DDF71FB00679778 /* Products */ = {
+			isa = PBXGroup;
+			name = Products;
+			sourceTree = "<group>";
+		};
+		5B8F80542DDF79D300F6C765 /* Products */ = {
+			isa = PBXGroup;
+			name = Products;
+			sourceTree = "<group>";
+		};
+		5B8F80A62DDF7FC300F6C765 /* Products */ = {
+			isa = PBXGroup;
+			name = Products;
+			sourceTree = "<group>";
+		};
 		5B922C4E2DD50810008BD183 = {
 			isa = PBXGroup;
 			children = (
@@ -157,6 +190,7 @@
 				5B922C532DD50810008BD183 /* Sources */,
 				5B922C542DD50810008BD183 /* Frameworks */,
 				5B922C552DD50810008BD183 /* Resources */,
+				5B8F80D82DDF81FE00F6C765 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -275,6 +309,20 @@
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 5B922C582DD50810008BD183 /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 5B8F80542DDF79D300F6C765 /* Products */;
+					ProjectRef = 5B8F80522DDF79D300F6C765 /* QATrainee.xcodeproj */;
+				},
+				{
+					ProductGroup = 5B656DB12DDF71FB00679778 /* Products */;
+					ProjectRef = 5B656DB02DDF71FB00679778 /* QATrainee.xcodeproj */;
+				},
+				{
+					ProductGroup = 5B8F80A62DDF7FC300F6C765 /* Products */;
+					ProjectRef = 5B8F80A42DDF7FC300F6C765 /* QATrainee.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				5B922C562DD50810008BD183 /* QATrainee */,
@@ -491,13 +539,15 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = RT5ZP4C246;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UIStatusBarStyle = "";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -518,13 +568,15 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = RT5ZP4C246;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UIStatusBarStyle = "";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
